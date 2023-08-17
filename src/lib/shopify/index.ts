@@ -53,6 +53,7 @@ export async function shopifyFetch<T>({
     const body = await result.json();
 
     if (body.errors) {
+      console.log(body.errors[0]);
       throw body.errors[0];
     }
 
@@ -62,6 +63,7 @@ export async function shopifyFetch<T>({
     };
   } catch (e) {
     if (isShopifyError(e)) {
+      console.log({ e });
       throw {
         cause: e.cause?.toString() || "unknown",
         status: e.status || 500,

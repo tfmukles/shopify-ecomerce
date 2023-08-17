@@ -1,6 +1,20 @@
 import { getProduct } from "@/lib/shopify";
+import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: { single: string };
+}): Promise<Metadata> => {
+  const product = await getProduct(params.single);
+  if (!product) return notFound();
+  return {
+    title: product.seo.title || product.title,
+    description: product.seo.description || product.description,
+  };
+};
 
 const Product = async ({ params }: { params: { single: string } }) => {
   const product = await getProduct(params.single);

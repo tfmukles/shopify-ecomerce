@@ -7,6 +7,8 @@ const Products = async () => {
   const { sortKey, reverse } = defaultSort;
   const products = await getProducts({ sortKey, reverse });
 
+  console.log({ products });
+
   return (
     <section className="section">
       <div className="container">
