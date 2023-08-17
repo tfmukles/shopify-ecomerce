@@ -22,7 +22,7 @@ type ExtractVariables<T> = T extends { variables: object }
 const key = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
 
 export async function shopifyFetch<T>({
-  cache = "force-cache",
+  cache = "no-cache",
   headers,
   query,
   tags,

@@ -12,9 +12,9 @@ const Product = async ({ params }: { params: { single: string } }) => {
     priceRange,
     featuredImage,
     images,
+    descriptionHtml,
+    options,
   } = product;
-
-  console.log(product.options);
 
   return (
     <section className="section">
@@ -106,47 +106,22 @@ const Product = async ({ params }: { params: { single: string } }) => {
               ${priceRange.minVariantPrice.amount}
             </h4>
             <h6 className="mb-3">{description}</h6>
-            <div className="d-flex flex-column flex-sm-row justify-content-between mb-4">
-              <input
-                id="quantity"
-                className="quantity mr-sm-2 mb-3 mb-sm-0"
-                type="text"
-                value=""
-                name="quantity"
-              />
-              <select
-                className="form-control mx-sm-2 mb-3 mb-sm-0"
-                name="color"
-              >
-                <option value="brown">Brown Color</option>
-                <option value="gray">Gray Color</option>
-                <option value="black">Black Color</option>
-              </select>
-              <select className="form-control ml-sm-2 mb-3 mb-sm-0" name="size">
-                <option className="form-control" value="small">
-                  Small Size
-                </option>
-                <option value="medium">Medium Size</option>
-                <option value="large">Large Size</option>
-              </select>
-              h
+            <div className="mb-3">
+              {options.map((option, i) => {
+                return (
+                  <div key={i} className="mb-3">
+                    <label className="p-2">{option.name}: </label>
+                    <select className="p-2 text-lg" name={option.name}>
+                      {option.values.map((value, id) => (
+                        <option key={id}>{value}</option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })}
             </div>
-            <a href="#" className="btn btn-primary mb-4">
-              add to cart
-            </a>
-            <h4 className="mb-3">
-              <span className="text-primary">Harry up!</span> Sale ends in
-            </h4>
-            {/* <!-- syo-timer --> */}
-            <div className="syotimer dark">
-              <div
-                id="sale-timer"
-                data-year="2019"
-                data-month="5"
-                data-day="1"
-                data-hour="1"
-              ></div>
-            </div>
+            <button className="btn btn-primary mb-4">add to cart</button>
+
             <hr />
             {/* <div className="payment-option border border-primary mt-5 mb-4">
               <h5 className="bg-white">Guaranted Safe Checkout</h5>
@@ -156,71 +131,10 @@ const Product = async ({ params }: { params: { single: string } }) => {
                 alt="payment-card"
               />
             </div> */}
-
-            <h5 className="mb-3">4 Great Reason to Buy From Us</h5>
-            <div className="row">
-              {/* <!-- service item --> */}
-              <div className="col-lg-3 col-6 mb-4 mb-lg-0">
-                <div className="d-flex">
-                  <i className="ti-truck icon-md mr-3"></i>
-                  <div className="align-items-center">
-                    <h6>Free Shipping</h6>
-                  </div>
-                </div>
-              </div>
-              {/* <!-- service item --> */}
-              <div className="col-lg-3 col-6 mb-4 mb-lg-0">
-                <div className="d-flex">
-                  <i className="ti-shield icon-md mr-3"></i>
-                  <div className="align-items-center">
-                    <h6>Secure Payment</h6>
-                  </div>
-                </div>
-              </div>
-              {/* <!-- service item --> */}
-              <div className="col-lg-3 col-6 mb-4 mb-lg-0">
-                <div className="d-flex">
-                  <i className="ti-money icon-md mr-3"></i>
-                  <div className="align-items-center">
-                    <h6>Lowest Price</h6>
-                  </div>
-                </div>
-              </div>
-              {/* <!-- service item --> */}
-              <div className="col-lg-3 col-6 mb-4 mb-lg-0">
-                <div className="d-flex">
-                  <i className="ti-reload icon-md mr-3"></i>
-                  <div className="align-items-center">
-                    <h6>30 Days Return</h6>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
           <div className="col-lg-12">
             <h3 className="mb-3">Product Description</h3>
-            <p className="text-gray mb-4">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-              enim ad minim veniam, quis nostrud exercitation ullamco laboris
-              nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in
-              reprehenderit in voluptate velit esse cillum dolore eu fugiat
-              nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-              sunt in culpa qui officia deserunt mollit anim id est laborum. Sed
-              ut perspiciatis unde omnis iste natus error sit voluptatem
-              accusantium doloremque laudantium.
-            </p>
-            <h4>Product Features</h4>
-            <ul className="features-list">
-              <li>
-                Mapped with 3M™ Thinsulate™ Insulation [40G Body / Sleeves /
-                Hood]
-              </li>
-              <li>Embossed Taffeta Lining</li>
-              <li>
-                DRYRIDE Durashell™ 2-Layer Oxford Fabric [10,000MM, 5,000G]
-              </li>
-            </ul>
+            {description}
           </div>
         </div>
       </div>
