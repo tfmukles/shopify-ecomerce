@@ -1,9 +1,14 @@
 import { HIDDEN_PRODUCT_TAG, SHOPIFY_GRAPHQL_API_ENDPOINT } from "../constants";
 import { isShopifyError } from "../type-gurds";
 import { ensureStartsWith } from "../utils";
+import {
+  createCustomerMutation,
+  getCustomerAccessTokenMutation,
+} from "./mutations/customer";
 import { getProductQuery, getProductsQuery } from "./queries/product";
 import {
   Connection,
+  CustomerInput,
   Image,
   Product,
   ShopifyProduct,
@@ -14,6 +19,7 @@ import {
 const domain = process.env.SHOPIFY_STORE_DOMAIN
   ? ensureStartsWith(process.env.SHOPIFY_STORE_DOMAIN, "https://")
   : "";
+
 const endpoint = `${domain}${SHOPIFY_GRAPHQL_API_ENDPOINT}`;
 
 type ExtractVariables<T> = T extends { variables: object }
@@ -158,4 +164,26 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
     },
   });
   return reshapeProduct(res.body.data.product, false);
+}
+
+export async function createCustomer(input: CustomerInput): Promise<any> {
+  const res = await shopifyFetch<any>({
+    query: createCustomerMutation,
+    variables: {
+      input,
+    },
+    cache: "no-store",
+  });
+
+  return res.body;
+}
+
+export async function getCustomerAccessToken(
+  input: Partial<CustomerInput>,
+): Promise<any> {
+  const res = await shopifyFetch<any>({
+    query: getCustomerAccessTokenMutation,
+    variables: { input },
+  });
+  return res.body;
 }

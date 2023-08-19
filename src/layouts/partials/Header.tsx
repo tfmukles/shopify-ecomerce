@@ -2,6 +2,7 @@
 
 import config from "@/config/config.json";
 import menu from "@/config/menu.json";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
@@ -37,9 +38,9 @@ const Header = () => {
         className="navbar navbar-expand-lg navbar-light bg-white w-100"
         id="navbar"
       >
-        <a className="navbar-brand order-2 order-lg-1" href="index.html">
+        <Link className="navbar-brand order-2 order-lg-1" href="/">
           <img className="img-fluid" src="images/logo.png" alt="logo" />
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -325,7 +326,7 @@ const Header = () => {
                   </a>
                 </div>
               </div>
-            </div>  
+            </div>
           </div>
         </div>
       </nav>

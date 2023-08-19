@@ -1,25 +1,30 @@
 "use client";
 
-import { shopifyFetch } from "@/lib/shopify";
-import { customerCreate } from "@/lib/shopify/mutations/customer";
+import { ShopifyCustomer } from "@/lib/shopify/types";
+import { useTransition } from "react";
+
+type key = keyof ShopifyCustomer;
 
 const Register = () => {
-  const submitHandler = (e: React.FormEvent) => {
+  const [isPending, startTransition] = useTransition();
+  const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formObject: { [key: string]: unknown } = {};
     const form = e.currentTarget as HTMLFormElement;
-    const formData = new FormData(form);
-    formData.forEach((value, key) => {
-      formObject[key] = value;
-    });
+    const formData = Object.fromEntries(new FormData(form)) as any;
 
-    const data = shopifyFetch<any>({
-      query: customerCreate,
-      variables: formObject,
+    startTransition(async () => {
+      const res = await fetch("/api/customer/register", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log({ data });
     });
-
-    console.log(data);
   };
+
   return (
     <section className="signin-page account">
       <div className="container">
@@ -49,6 +54,7 @@ const Register = () => {
                 </div>
                 <div className="form-group">
                   <input
+                    name="email"
                     type="email"
                     className="form-control"
                     placeholder="Email"
@@ -63,13 +69,17 @@ const Register = () => {
                   />
                 </div>
                 <div className="text-center">
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    disabled={isPending}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
                     Sign In
                   </button>
                 </div>
               </form>
               <p className="mt-3">
-                Already hava an account ?<a href="login.html"> Login</a>
+                Already hava an account ?<a href="/register"> Login</a>
               </p>
               <p>
                 <a href="forget-password.html"> Forgot your password?</a>

@@ -1,3 +1,4 @@
+import VariantSelector from "@/components/VariantSelector";
 import { getProduct } from "@/lib/shopify";
 import { Metadata } from "next";
 import Image from "next/image";
@@ -28,6 +29,7 @@ const Product = async ({ params }: { params: { single: string } }) => {
     images,
     descriptionHtml,
     options,
+    variants,
   } = product;
 
   return (
@@ -121,20 +123,8 @@ const Product = async ({ params }: { params: { single: string } }) => {
             </h4>
             <h6 className="mb-3">{description}</h6>
             <div className="mb-3">
-              {options.map((option, i) => {
-                return (
-                  <div key={i} className="mb-3">
-                    <label className="p-2">{option.name}: </label>
-                    <select className="p-2 text-lg" name={option.name}>
-                      {option.values.map((value, id) => (
-                        <option key={id}>{value}</option>
-                      ))}
-                    </select>
-                  </div>
-                );
-              })}
+              <VariantSelector variants={variants} options={options} />
             </div>
-            <button className="btn btn-primary mb-4">add to cart</button>
 
             <hr />
             {/* <div className="payment-option border border-primary mt-5 mb-4">

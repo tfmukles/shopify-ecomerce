@@ -23,9 +23,6 @@ const Product = ({ product }: { product: Product }) => {
               alt="product-img"
             /> */}
           </Link>
-          <div className="btn-cart">
-            <button className="btn btn-primary btn-sm">Add To Cart</button>
-          </div>
         </div>
         <div className="product-hover-overlay">
           <ul className="list-unstyled">
@@ -68,9 +65,9 @@ const Product = ({ product }: { product: Product }) => {
       </div>
       <div className="product-info">
         <h3 className="h5">
-          <a className="text-color" href="product-single.html">
+          <Link className="text-color" href={`products/${handle}`}>
             {title}
-          </a>
+          </Link>
         </h3>
         <span className="h5">${priceRange.maxVariantPrice.amount}</span>
       </div>

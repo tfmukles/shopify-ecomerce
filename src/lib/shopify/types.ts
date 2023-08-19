@@ -113,3 +113,24 @@ export type ShopifyProductOperation = {
     handle: string;
   };
 };
+
+export interface CustomerInput {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+export interface CustomerAccessTokenInput {
+  email: string;
+  password: string;
+}
+
+export interface ShopifyCustomer {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  acceptsMarketing: boolean;
+  phone: string;
+}
