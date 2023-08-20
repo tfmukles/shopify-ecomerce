@@ -1,6 +1,7 @@
 "use client";
 
 import { ProductVariant } from "@/lib/shopify/types";
+import { useProvider } from "@/lib/state/context";
 import { useTransition } from "react";
 
 const AddToCart = ({
@@ -11,6 +12,9 @@ const AddToCart = ({
   className?: string;
 }) => {
   const [isPending, startTransition] = useTransition();
+  const {
+    cart: { dispatch },
+  } = useProvider();
 
   const addCart = () => {
     if (!selectedVariant?.availableForSale) return;
@@ -23,17 +27,24 @@ const AddToCart = ({
         }),
       });
       const data = await res.json();
-      console.log(data);
+      dispatch({ type: "success", payload: { ...data } });
     });
   };
+
+  const title =
+    selectedVariant === undefined
+      ? "Please Select Option"
+      : selectedVariant?.availableForSale
+      ? "Add To Cart"
+      : "Sold Out";
 
   return (
     <button
       onClick={addCart}
       disabled={!selectedVariant?.availableForSale || isPending}
-      className={`btn btn-primary mb-4`}
+      className={`btn btn-primary mb-4 ${className}`}
     >
-      {!selectedVariant?.availableForSale ? "Sold Out" : "Add To Cart"}
+      {title}
     </button>
   );
 };

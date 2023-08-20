@@ -3,10 +3,10 @@
 import config from "@/config/config.json";
 import menu from "@/config/menu.json";
 import DynamicIcon from "@/helpers/DynamicIcon";
-import { Cart } from "@/lib/shopify/types";
+import { useProvider } from "@/lib/state/context";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 async function getCarts() {
@@ -40,19 +40,22 @@ const Header = () => {
   const { navigation_button, settings } = config;
   // get current path
   const pathname = usePathname();
-  const router = useRouter();
 
   // scroll to top on route change
   useEffect(() => {
     window.scroll(0, 0);
   }, [pathname]);
-
   const [open, setOpen] = useState(false);
-  const [cart, setCart] = useState<Cart | undefined>();
+
+  const {
+    cart: { dispatch, state },
+  } = useProvider();
+  const { cart } = state;
 
   useEffect(() => {
-    getCarts().then((res) => setCart(res));
-  }, []);
+    dispatch({ type: "loading" });
+    getCarts().then((res) => dispatch({ type: "success", payload: res }));
+  }, [dispatch]);
 
   const updateItemQuantity = async ({
     variantId,
@@ -74,10 +77,12 @@ const Header = () => {
         "Content-Type": "application/json",
       },
     });
-    await response.json();
-    router.refresh();
+    const data = await response.json();
+    dispatch({ type: "success", payload: data });
   };
+
   const removeItemQuantity = () => {};
+
   return (
     <>
       <nav

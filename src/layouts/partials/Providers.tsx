@@ -1,20 +1,16 @@
 "use client";
 
-import config from "@/config/config.json";
-import { ThemeProvider } from "next-themes";
+import { useCartState } from "@/lib/state/cart/cart";
+import { Context } from "@/lib/state/context";
 import { ReactNode } from "react";
 
 const Providers = ({ children }: { children: ReactNode }) => {
-  const { default_theme } = config.settings;
+  const { state, dispatch } = useCartState();
 
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme={default_theme}
-      enableColorScheme={false}
-    >
+    <Context.Provider value={{ cart: { state, dispatch } }}>
       {children}
-    </ThemeProvider>
+    </Context.Provider>
   );
 };
 
