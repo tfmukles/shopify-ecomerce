@@ -2,9 +2,23 @@
 
 import config from "@/config/config.json";
 import menu from "@/config/menu.json";
+import DynamicIcon from "@/helpers/DynamicIcon";
+import { Cart } from "@/lib/shopify/types";
+import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+async function getCarts() {
+  const response = await fetch("/api/cart/get", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  return data;
+}
 
 //  child navigation link interface
 export interface IChildNavigationLink {
@@ -26,12 +40,44 @@ const Header = () => {
   const { navigation_button, settings } = config;
   // get current path
   const pathname = usePathname();
+  const router = useRouter();
 
   // scroll to top on route change
   useEffect(() => {
     window.scroll(0, 0);
   }, [pathname]);
 
+  const [open, setOpen] = useState(false);
+  const [cart, setCart] = useState<Cart | undefined>();
+
+  useEffect(() => {
+    getCarts().then((res) => setCart(res));
+  }, []);
+
+  const updateItemQuantity = async ({
+    variantId,
+    quantity,
+    lineId,
+  }: {
+    variantId: string;
+    quantity: number;
+    lineId: string;
+  }) => {
+    const response = await fetch("/api/cart/update", {
+      method: "POST",
+      body: JSON.stringify({
+        variantId,
+        quantity,
+        lineId,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    await response.json();
+    router.refresh();
+  };
+  const removeItemQuantity = () => {};
   return (
     <>
       <nav
@@ -39,7 +85,13 @@ const Header = () => {
         id="navbar"
       >
         <Link className="navbar-brand order-2 order-lg-1" href="/">
-          <img className="img-fluid" src="images/logo.png" alt="logo" />
+          <Image
+            width={169}
+            height={39}
+            className="img-fluid"
+            src="/images/logo.png"
+            alt="logo"
+          />
         </Link>
         <button
           className="navbar-toggler"
@@ -282,44 +334,130 @@ const Header = () => {
             </div>
             {/* <!-- cart --> */}
             <div className="cart">
-              <button id="cartOpen" className="cart-btn">
-                <i className="ti-bag"></i>
-                <span className="d-xs-none">CART</span> 3
+              <button
+                id="cartOpen"
+                className="cart-btn"
+                onClick={() => setOpen(true)}
+              >
+                <DynamicIcon
+                  width={30}
+                  height={30}
+                  className="me-1"
+                  icon="FaCartPlus"
+                />
+                <span className="d-xs-none">CART</span>{" "}
+                {cart?.totalQuantity || 0}
               </button>
-              <div className="cart-wrapper">
-                <i id="cartClose" className="ti-close cart-close"></i>
+              <div className={`cart-wrapper ${open ? "open" : ""}`}>
+                <button
+                  onClick={() => setOpen(false)}
+                  className="ms-auto d-block border-0 d-felx text-right"
+                >
+                  <svg
+                    className="d-inline"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="1em"
+                    height="1em"
+                    fill="currentColor"
+                    stroke="currentColor"
+                    strokeWidth={0}
+                    viewBox="0 0 512 512"
+                  >
+                    <path
+                      stroke="none"
+                      d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
+                    />
+                  </svg>
+                </button>
                 <h4 className="mb-4">Your Cart</h4>
-                <ul className="pl-0 mb-3">
-                  <li className="d-flex border-bottom">
-                    <img src="images/cart/product-1.jpg" alt="product-img" />
-                    <div className="mx-3">
-                      <h6>Eleven Paris Skinny Jeans</h6>
-                      <span>1</span> X <span>$79.00</span>
-                    </div>
-                    <i className="ti-close"></i>
-                  </li>
-                  <li className="d-flex border-bottom">
-                    <img src="images/cart/product-2.jpg" alt="product-img" />
-                    <div className="mx-3">
-                      <h6>Eleven Paris Skinny Jeans top</h6>
-                      <span>1 X</span> <span>$79.00</span>
-                    </div>
-                    <i className="ti-close"></i>
-                  </li>
+
+                <ul>
+                  {cart?.lines?.map((line, i) => {
+                    const { featuredImage, title, priceRange } =
+                      line.merchandise.product;
+                    return (
+                      <li key={i} className="d-flex border-bottom">
+                        <Image
+                          width={63}
+                          height={85}
+                          src={featuredImage.url}
+                          alt={title}
+                        />
+                        <div className="mx-3">
+                          <h6>{title}</h6>
+                          <span>{line.quantity}</span> X{" "}
+                          <span>${line.cost.totalAmount.amount}</span>
+                          <div className="d-flex mt-3">
+                            <button
+                              className="border-0"
+                              onClick={() =>
+                                updateItemQuantity({
+                                  variantId: line.merchandise.id,
+                                  quantity: line.quantity + 1,
+                                  lineId: line.id,
+                                })
+                              }
+                            >
+                              +
+                            </button>
+                            <p className="mx-2 mb-0">{line.quantity}</p>
+                            <button
+                              className="border-0"
+                              onClick={() =>
+                                updateItemQuantity({
+                                  variantId: line.merchandise.id,
+                                  quantity: line.quantity - 1,
+                                  lineId: line.id,
+                                })
+                              }
+                            >
+                              -
+                            </button>
+                          </div>
+                        </div>
+                        <svg
+                          className="d-inline"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="1em"
+                          height="1em"
+                          fill="currentColor"
+                          stroke="currentColor"
+                          strokeWidth={0}
+                          viewBox="0 0 512 512"
+                        >
+                          <path
+                            stroke="none"
+                            d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
+                          />
+                        </svg>
+                      </li>
+                    );
+                  })}
                 </ul>
-                <div className="mb-3">
-                  <span>Cart Total</span>
-                  <span className="float-right">$79.00</span>
+
+                <div className="my-3">
+                  <span>Subtotal: </span>
+                  <span className="float-right">
+                    ${cart?.cost.subtotalAmount.amount}
+                  </span>
                 </div>
+                <div className="mb-3">
+                  <span>Total Tax: </span>
+                  <span className="float-right">
+                    ${cart?.cost.totalTaxAmount.amount}
+                  </span>
+                </div>
+
+                <div className="mb-3">
+                  <span>Cart Total: </span>
+                  <span className="float-right">
+                    ${cart?.cost.totalAmount.amount}
+                  </span>
+                </div>
+
                 <div className="text-center">
                   <a
-                    href="cart.html"
-                    className="btn btn-dark btn-mobile rounded-0"
-                  >
-                    view cart
-                  </a>
-                  <a
-                    href="shipping.html"
+                    href={cart?.checkoutUrl}
                     className="btn btn-dark btn-mobile rounded-0"
                   >
                     check out

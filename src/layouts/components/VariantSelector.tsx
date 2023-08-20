@@ -18,12 +18,10 @@ const VariantSelector = ({
     setProdcutOption((prevOption) => ({ ...prevOption, [name]: value }));
   };
 
-  console.log(
-    variants.find((variant) => {
-      return variant.selectedOptions.every((option) => {
-        option.value === (productOption as any)[option.name].toLowercase();
-      });
-    }),
+  const selectedVariant = variants.find((variant) =>
+    variant.selectedOptions.every(
+      (option) => option.value === (productOption as any)[option.name],
+    ),
   );
 
   return (
@@ -47,8 +45,7 @@ const VariantSelector = ({
           </div>
         );
       })}
-
-      <AddToCart />
+      <AddToCart selectedVariant={selectedVariant} />
     </>
   );
 };
