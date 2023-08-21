@@ -9,7 +9,7 @@ Follow these steps to set up the project on your local machine.
 ### Prerequisites
 
 - Node.js installed
-- Shopify store with API credentials (see [Shopify Setup](https://shopify.dev/docs/api/storefront/2023-07/))
+- Shopify store with API credentials (see [Shopify Setup](https://shopify.dev/docs/api/storefront))
 
 ### Installation
 
