@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 
 const Login = () => {
+  const router = useRouter();
   const submitHanlder = async (e: FormEvent) => {
     e.preventDefault();
     const formData = Object.fromEntries(
@@ -18,7 +20,8 @@ const Login = () => {
       body: JSON.stringify(formData),
     });
     const data = await res.json();
-    console.log(data);
+    alert("Thank for login");
+    router.push("/");
   };
 
   return (

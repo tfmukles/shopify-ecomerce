@@ -121,16 +121,16 @@ const Header = () => {
               </a>
             </li>
             <li className="nav-item dropdown view">
-              <a
+              <Link
                 className="nav-link dropdown-toggle"
-                href="shop.html"
+                href="/products"
                 role="button"
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
               >
                 shop
-              </a>
+              </Link>
               <div className="dropdown-menu">
                 <a className="dropdown-item" href="shop.html">
                   Shop

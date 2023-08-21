@@ -9,5 +9,5 @@ export async function POST(req: NextRequest) {
     cart = await getCart(cartId);
   }
 
-  return NextResponse.json(cart);
+  return NextResponse.json(cart ?? {});
 }
