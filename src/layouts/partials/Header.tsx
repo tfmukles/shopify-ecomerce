@@ -354,120 +354,125 @@ const Header = () => {
                 {cart?.totalQuantity || 0}
               </button>
               <div className={`cart-wrapper ${open ? "open" : ""}`}>
-                <button
-                  onClick={() => setOpen(false)}
-                  className="ms-auto d-block border-0 d-felx text-right"
-                >
-                  <svg
-                    className="d-inline"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="1em"
-                    height="1em"
-                    fill="currentColor"
-                    stroke="currentColor"
-                    strokeWidth={0}
-                    viewBox="0 0 512 512"
-                  >
-                    <path
-                      stroke="none"
-                      d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
-                    />
-                  </svg>
-                </button>
-                <h4 className="mb-4">Your Cart</h4>
-
-                <ul>
-                  {cart?.lines?.map((line, i) => {
-                    const { featuredImage, title, priceRange } =
-                      line.merchandise.product;
-                    return (
-                      <li key={i} className="d-flex border-bottom">
-                        <Image
-                          width={63}
-                          height={85}
-                          src={featuredImage.url}
-                          alt={title}
+                {cart?.totalQuantity || 0 > 0 ? (
+                  <>
+                    <button
+                      onClick={() => setOpen(false)}
+                      className="ms-auto d-block border-0 d-felx text-right"
+                    >
+                      <svg
+                        className="d-inline"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        strokeWidth={0}
+                        viewBox="0 0 512 512"
+                      >
+                        <path
+                          stroke="none"
+                          d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
                         />
-                        <div className="mx-3">
-                          <h6>{title}</h6>
-                          <span>{line.quantity}</span> X{" "}
-                          <span>${line.cost.totalAmount.amount}</span>
-                          <div className="d-flex mt-3">
-                            <button
-                              className="border-0"
-                              onClick={() =>
-                                updateItemQuantity({
-                                  variantId: line.merchandise.id,
-                                  quantity: line.quantity + 1,
-                                  lineId: line.id,
-                                })
-                              }
+                      </svg>
+                    </button>
+                    <h4 className="mb-4">Your Cart</h4>
+                    <ul>
+                      {cart?.lines?.map((line, i) => {
+                        const { featuredImage, title, priceRange } =
+                          line.merchandise.product;
+                        return (
+                          <li key={i} className="d-flex border-bottom">
+                            <Image
+                              width={63}
+                              height={85}
+                              src={featuredImage.url}
+                              alt={title}
+                            />
+                            <div className="mx-3">
+                              <h6>{title}</h6>
+                              <span>{line.quantity}</span> X{" "}
+                              <span>${line.cost.totalAmount.amount}</span>
+                              <div className="d-flex mt-3">
+                                <button
+                                  className="border-0"
+                                  onClick={() =>
+                                    updateItemQuantity({
+                                      variantId: line.merchandise.id,
+                                      quantity: line.quantity + 1,
+                                      lineId: line.id,
+                                    })
+                                  }
+                                >
+                                  +
+                                </button>
+                                <p className="mx-2 mb-0">{line.quantity}</p>
+                                <button
+                                  className="border-0"
+                                  onClick={() =>
+                                    updateItemQuantity({
+                                      variantId: line.merchandise.id,
+                                      quantity: line.quantity - 1,
+                                      lineId: line.id,
+                                    })
+                                  }
+                                >
+                                  -
+                                </button>
+                              </div>
+                            </div>
+                            <svg
+                              className="d-inline"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="1em"
+                              height="1em"
+                              fill="currentColor"
+                              stroke="currentColor"
+                              strokeWidth={0}
+                              viewBox="0 0 512 512"
                             >
-                              +
-                            </button>
-                            <p className="mx-2 mb-0">{line.quantity}</p>
-                            <button
-                              className="border-0"
-                              onClick={() =>
-                                updateItemQuantity({
-                                  variantId: line.merchandise.id,
-                                  quantity: line.quantity - 1,
-                                  lineId: line.id,
-                                })
-                              }
-                            >
-                              -
-                            </button>
-                          </div>
-                        </div>
-                        <svg
-                          className="d-inline"
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1em"
-                          height="1em"
-                          fill="currentColor"
-                          stroke="currentColor"
-                          strokeWidth={0}
-                          viewBox="0 0 512 512"
-                        >
-                          <path
-                            stroke="none"
-                            d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
-                          />
-                        </svg>
-                      </li>
-                    );
-                  })}
-                </ul>
+                              <path
+                                stroke="none"
+                                d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
+                              />
+                            </svg>
+                          </li>
+                        );
+                      })}
+                    </ul>
 
-                <div className="my-3">
-                  <span>Subtotal: </span>
-                  <span className="float-right">
-                    ${cart?.cost.subtotalAmount.amount}
-                  </span>
-                </div>
-                <div className="mb-3">
-                  <span>Total Tax: </span>
-                  <span className="float-right">
-                    ${cart?.cost.totalTaxAmount.amount}
-                  </span>
-                </div>
+                    <div className="my-3">
+                      <span>Subtotal: </span>
+                      <span className="float-right">
+                        ${cart?.cost.subtotalAmount.amount}
+                      </span>
+                    </div>
+                    <div className="mb-3">
+                      <span>Total Tax: </span>
+                      <span className="float-right">
+                        ${cart?.cost.totalTaxAmount.amount}
+                      </span>
+                    </div>
 
-                <div className="mb-3">
-                  <span>Cart Total: </span>
-                  <span className="float-right">
-                    ${cart?.cost.totalAmount.amount}
-                  </span>
-                </div>
+                    <div className="mb-3">
+                      <span>Cart Total: </span>
+                      <span className="float-right">
+                        ${cart?.cost.totalAmount.amount}
+                      </span>
+                    </div>
 
-                <div className="text-center">
-                  <a
-                    href={cart?.checkoutUrl}
-                    className="btn btn-dark btn-mobile rounded-0"
-                  >
-                    check out
-                  </a>
-                </div>
+                    <div className="text-center">
+                      <a
+                        href={cart?.checkoutUrl}
+                        className="btn btn-dark btn-mobile rounded-0"
+                      >
+                        check out
+                      </a>
+                    </div>
+                  </>
+                ) : (
+                  <h4>Cart is empty</h4>
+                )}
               </div>
             </div>
           </div>
