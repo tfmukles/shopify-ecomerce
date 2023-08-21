@@ -50,6 +50,7 @@ const Header = () => {
   const {
     cart: { dispatch, state },
   } = useProvider();
+
   const { cart } = state;
 
   useEffect(() => {
@@ -81,7 +82,19 @@ const Header = () => {
     dispatch({ type: "success", payload: data });
   };
 
-  const removeItemQuantity = () => {};
+  async function removeFromCart(lineIds: string[]) {
+    const response = await fetch("/api/cart/remove", {
+      method: "POST",
+      body: JSON.stringify({
+        lineIds,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    dispatch({ type: "success", payload: data });
+  }
 
   return (
     <>
@@ -179,6 +192,7 @@ const Header = () => {
                 <a className="dropdown-item" href="contact.html">
                   Contact Us
                 </a>
+
                 <a className="dropdown-item" href="login.html">
                   Login
                 </a>
@@ -314,6 +328,11 @@ const Header = () => {
                 Contact Us
               </a>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" href="/order">
+                Order
+              </Link>
+            </li>
           </ul>
         </div>
         <div className="order-3 navbar-right-elements">
@@ -337,6 +356,7 @@ const Header = () => {
                 </form>
               </div>
             </div>
+
             {/* <!-- cart --> */}
             <div className="cart">
               <button
@@ -379,10 +399,13 @@ const Header = () => {
                     <h4 className="mb-4">Your Cart</h4>
                     <ul>
                       {cart?.lines?.map((line, i) => {
-                        const { featuredImage, title, priceRange } =
+                        const { featuredImage, title } =
                           line.merchandise.product;
                         return (
-                          <li key={i} className="d-flex border-bottom">
+                          <li
+                            key={i}
+                            className="d-flex border-bottom align-items-start"
+                          >
                             <Image
                               width={63}
                               height={85}
@@ -421,21 +444,25 @@ const Header = () => {
                                 </button>
                               </div>
                             </div>
-                            <svg
-                              className="d-inline"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="1em"
-                              height="1em"
-                              fill="currentColor"
-                              stroke="currentColor"
-                              strokeWidth={0}
-                              viewBox="0 0 512 512"
+                            <button
+                              className="border-0"
+                              onClick={() => removeFromCart([line.id])}
                             >
-                              <path
-                                stroke="none"
-                                d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
-                              />
-                            </svg>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="1em"
+                                height="1em"
+                                fill="currentColor"
+                                stroke="currentColor"
+                                strokeWidth={0}
+                                viewBox="0 0 512 512"
+                              >
+                                <path
+                                  stroke="none"
+                                  d="M400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49z"
+                                />
+                              </svg>
+                            </button>
                           </li>
                         );
                       })}

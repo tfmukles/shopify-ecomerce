@@ -1,27 +1,36 @@
 "use client";
 
+import { useProvider } from "@/lib/state/context";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
 
 const Login = () => {
   const router = useRouter();
+  const {
+    user: { dispatch, state },
+  } = useProvider();
   const submitHanlder = async (e: FormEvent) => {
     e.preventDefault();
     const formData = Object.fromEntries(
       new FormData(e.currentTarget as HTMLFormElement),
     );
-
-    const res = await fetch("/api/customer/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await res.json();
-    alert("Thank for login");
-    router.push("/");
+    try {
+      const res = await fetch("/api/customer/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      dispatch({ type: "success", payload: data });
+      alert("Thank for login");
+      router.push("/");
+    } catch (error) {
+      alert(error);
+    }
   };
 
   return (
@@ -31,7 +40,12 @@ const Login = () => {
           <div className="col-md-6 mx-auto">
             <div className="block text-center">
               <a className="logo" href="index.html">
-                <img src="images/logo.png" alt="logo" />
+                <Image
+                  width={169}
+                  height={39}
+                  src="/images/logo.png"
+                  alt="logo"
+                />
               </a>
               <h2 className="text-center">Welcome Back</h2>
               <form

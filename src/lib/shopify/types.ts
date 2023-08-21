@@ -211,3 +211,53 @@ export type ShopifyUpdateCartOperation = {
     }[];
   };
 };
+
+export type ShopifyRemoveFromCartOperation = {
+  data: {
+    cartLinesRemove: {
+      cart: ShopifyCart;
+    };
+  };
+  variables: {
+    cartId: string;
+    lineIds: string[];
+  };
+};
+
+export type user = {
+  customer: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string | null;
+    acceptsMarketing: boolean;
+  };
+};
+
+export type userOperation = {
+  data: user;
+  variables: {
+    input: string;
+  };
+};
+
+export type registerOperation = {
+  data: {
+    customerCreate: {
+      customer: user;
+    };
+  };
+  variables: {
+    input: CustomerInput;
+  };
+};
+
+export type customerToken = {
+  customerAccessTokenCreate: {
+    customerAccessToken: {
+      accessToken: string;
+    };
+    customerUserErrors: unknown;
+  };
+};

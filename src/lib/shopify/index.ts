@@ -5,12 +5,15 @@ import {
   addToCartMutation,
   createCartMutation,
   editCartItemsMutation,
+  removeFromCartMutation,
 } from "./mutations/cart";
 import {
   createCustomerMutation,
   getCustomerAccessTokenMutation,
+  getUserDetailsQuery,
 } from "./mutations/customer";
 import { getCartQuery } from "./queries/cart";
+import { getOrder } from "./queries/order";
 import { getProductQuery, getProductsQuery } from "./queries/product";
 import {
   Cart,
@@ -25,7 +28,11 @@ import {
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductsOperation,
+  ShopifyRemoveFromCartOperation,
   ShopifyUpdateCartOperation,
+  registerOperation,
+  user,
+  userOperation,
 } from "./types";
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN
@@ -178,8 +185,8 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
   return reshapeProduct(res.body.data.product, false);
 }
 
-export async function createCustomer(input: CustomerInput): Promise<any> {
-  const res = await shopifyFetch<any>({
+export async function createCustomer(input: CustomerInput): Promise<user> {
+  const res = await shopifyFetch<registerOperation>({
     query: createCustomerMutation,
     variables: {
       input,
@@ -187,7 +194,8 @@ export async function createCustomer(input: CustomerInput): Promise<any> {
     cache: "no-store",
   });
 
-  return res.body;
+  console.log(res);
+  return res.body.data.customerCreate.customer;
 }
 
 export async function getCustomerAccessToken(
@@ -260,4 +268,39 @@ export async function updateCart(
   });
 
   return reshapeCart(res.body.data.cartLinesUpdate.cart);
+}
+
+export async function removeFromCart(
+  cartId: string,
+  lineIds: string[],
+): Promise<Cart | any> {
+  const res = await shopifyFetch<ShopifyRemoveFromCartOperation>({
+    query: removeFromCartMutation,
+    variables: {
+      cartId,
+      lineIds,
+    },
+    cache: "no-store",
+  });
+  return reshapeCart(res.body.data.cartLinesRemove.cart);
+}
+
+export async function getOrders() {
+  const res = await shopifyFetch<any>({
+    query: getOrder,
+    variables: {},
+    cache: "no-store",
+  });
+}
+
+export async function getUserDetails(accessToken: string): Promise<user> {
+  const response = await shopifyFetch<userOperation>({
+    query: getUserDetailsQuery,
+    variables: {
+      input: accessToken,
+    },
+    cache: "no-store",
+  });
+
+  return response.body.data;
 }

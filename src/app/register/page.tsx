@@ -1,27 +1,35 @@
 "use client";
 
 import { ShopifyCustomer } from "@/lib/shopify/types";
+import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
 type key = keyof ShopifyCustomer;
 
 const Register = () => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.currentTarget as HTMLFormElement;
     const formData = Object.fromEntries(new FormData(form)) as any;
 
     startTransition(async () => {
-      const res = await fetch("/api/customer/register", {
-        method: "POST",
-        body: JSON.stringify(formData),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      console.log({ data });
+      try {
+        const res = await fetch("/api/customer/register", {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        const data = await res.json();
+        console.log(data);
+        alert("login successfull");
+        router.push("/");
+      } catch (error: any) {
+        console.log(error?.message);
+      }
     });
   };
 

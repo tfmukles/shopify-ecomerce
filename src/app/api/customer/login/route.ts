@@ -1,8 +1,15 @@
-import { getCustomerAccessToken } from "@/lib/shopify";
+import { getCustomerAccessToken, getUserDetails } from "@/lib/shopify";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const input = await req.json();
-  const { data } = await getCustomerAccessToken(input);
-  return NextResponse.json(data);
+  try {
+    const input = await req.json();
+    const { data } = await getCustomerAccessToken(input);
+    const token =
+      data?.customerAccessTokenCreate?.customerAccessToken.accessToken;
+    const { customer } = await getUserDetails(token);
+    return NextResponse.json({ ...customer, token });
+  } catch (error) {
+    return NextResponse.json(error);
+  }
 }

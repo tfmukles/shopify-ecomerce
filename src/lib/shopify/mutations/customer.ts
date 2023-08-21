@@ -29,3 +29,16 @@ export const getCustomerAccessTokenMutation = /* GraphQL */ `
     }
   }
 `;
+
+export const getUserDetailsQuery = /* GraphQL */ `
+  query getOrders($input: String!) {
+    customer(customerAccessToken: $input) {
+      id
+      firstName
+      lastName
+      acceptsMarketing
+      email
+      phone
+    }
+  }
+`;
