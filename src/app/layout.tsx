@@ -1,7 +1,7 @@
 import TwSizeIndicator from "@/helpers/TwSizeIndicator";
 import Footer from "@/partials/Footer";
 import Header from "@/partials/Header";
-import Providers from "@/partials/Providers";
+import { Providers } from "@/partials/Providers";
 import "@/scss/style.scss";
 
 export default function RootLayout({

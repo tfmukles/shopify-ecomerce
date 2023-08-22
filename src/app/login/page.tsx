@@ -1,33 +1,23 @@
 "use client";
 
-import { useProvider } from "@/lib/state/context";
+import { getUser } from "@/redux/features/user/userSlice";
+import { useAppDispatch } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent } from "react";
+import { FormEvent, useTransition } from "react";
 
 const Login = () => {
   const router = useRouter();
-  const {
-    user: { dispatch, state },
-  } = useProvider();
+  const dispatch = useAppDispatch();
+  const [isPendding, setTranstion] = useTransition();
   const submitHanlder = async (e: FormEvent) => {
     e.preventDefault();
     const formData = Object.fromEntries(
       new FormData(e.currentTarget as HTMLFormElement),
     );
+    dispatch(getUser(formData as any));
     try {
-      const res = await fetch("/api/customer/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await res.json();
-      dispatch({ type: "success", payload: data });
-      alert("Thank for login");
-      router.push("/");
     } catch (error) {
       alert(error);
     }
@@ -70,7 +60,11 @@ const Login = () => {
                   />
                 </div>
                 <div className="text-center">
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    disabled={isPendding}
+                    type="submit"
+                    className="btn btn-primary"
+                  >
                     Login
                   </button>
                 </div>

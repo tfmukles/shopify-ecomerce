@@ -1,24 +1,18 @@
 "use client";
 
+import EditType from "@/components/EditQuantity";
 import config from "@/config/config.json";
 import menu from "@/config/menu.json";
 import DynamicIcon from "@/helpers/DynamicIcon";
-import { useProvider } from "@/lib/state/context";
+import {
+  fetchCarts,
+  updateProductQuantity,
+} from "@/redux/features/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-
-async function getCarts() {
-  const response = await fetch("/api/cart/get", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  const data = await response.json();
-  return data;
-}
 
 //  child navigation link interface
 export interface IChildNavigationLink {
@@ -41,21 +35,17 @@ const Header = () => {
   // get current path
   const pathname = usePathname();
 
+  const dispatch = useAppDispatch();
+  const { cart } = useAppSelector((state) => state.cart);
+
   // scroll to top on route change
   useEffect(() => {
     window.scroll(0, 0);
   }, [pathname]);
   const [open, setOpen] = useState(false);
 
-  const {
-    cart: { dispatch, state },
-  } = useProvider();
-
-  const { cart } = state;
-
   useEffect(() => {
-    dispatch({ type: "loading" });
-    getCarts().then((res) => dispatch({ type: "success", payload: res }));
+    dispatch(fetchCarts());
   }, [dispatch]);
 
   const updateItemQuantity = async ({
@@ -67,19 +57,7 @@ const Header = () => {
     quantity: number;
     lineId: string;
   }) => {
-    const response = await fetch("/api/cart/update", {
-      method: "POST",
-      body: JSON.stringify({
-        variantId,
-        quantity,
-        lineId,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    dispatch({ type: "success", payload: data });
+    dispatch(updateProductQuantity({ variantId, quantity, lineId }));
   };
 
   async function removeFromCart(lineIds: string[]) {
@@ -417,31 +395,20 @@ const Header = () => {
                               <span>{line.quantity}</span> X{" "}
                               <span>${line.cost.totalAmount.amount}</span>
                               <div className="d-flex mt-3">
-                                <button
-                                  className="border-0"
-                                  onClick={() =>
-                                    updateItemQuantity({
-                                      variantId: line.merchandise.id,
-                                      quantity: line.quantity + 1,
-                                      lineId: line.id,
-                                    })
-                                  }
-                                >
-                                  +
-                                </button>
+                                <EditType
+                                  lineId={line.id}
+                                  quantity={line.quantity}
+                                  variantId={line.merchandise.id}
+                                  type="plus"
+                                />
+
                                 <p className="mx-2 mb-0">{line.quantity}</p>
-                                <button
-                                  className="border-0"
-                                  onClick={() =>
-                                    updateItemQuantity({
-                                      variantId: line.merchandise.id,
-                                      quantity: line.quantity - 1,
-                                      lineId: line.id,
-                                    })
-                                  }
-                                >
-                                  -
-                                </button>
+                                <EditType
+                                  lineId={line.id}
+                                  quantity={line.quantity}
+                                  variantId={line.merchandise.id}
+                                  type="minus"
+                                />
                               </div>
                             </div>
                             <button

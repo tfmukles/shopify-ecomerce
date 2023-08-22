@@ -73,3 +73,11 @@ export type Button = {
   label: string;
   link: string;
 };
+
+export interface IUser {
+  firstName: string;
+  lastName: string;
+  phone: string | null;
+  email: string;
+  acceptsMarketing: boolean;
+}
