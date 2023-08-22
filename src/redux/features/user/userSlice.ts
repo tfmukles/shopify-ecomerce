@@ -1,6 +1,6 @@
 import { IUser } from "@/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUserData, userRegistation } from "./userApi";
+import { getUserData } from "./userApi";
 
 export interface userState {
   isLoading: boolean;
@@ -23,7 +23,25 @@ const initialState: userState = {
 };
 
 export const getUser = createAsyncThunk("fetch/user", getUserData);
-export const createUser = createAsyncThunk("create/user", userRegistation);
+export const createUser = createAsyncThunk(
+  "create/user",
+  async (formData: IUser, { rejectWithValue }) => {
+    try {
+      const res = await fetch("/api/customer/register", {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const userSlice = createSlice({
   name: "user",

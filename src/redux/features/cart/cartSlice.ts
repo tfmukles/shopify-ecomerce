@@ -15,7 +15,7 @@ const initialState: cartState = {
   error: null,
 };
 
-export const fetchCarts = createAsyncThunk("fetch/jobs", getCarts);
+export const fetchCarts = createAsyncThunk("fetch/cart", getCarts);
 
 export const addCartItem = createAsyncThunk("add/cart", addtoCart);
 

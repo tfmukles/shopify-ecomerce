@@ -78,7 +78,6 @@ export async function shopifyFetch<T>({
     const body = await result.json();
 
     if (body.errors) {
-      console.log(body.errors[0]);
       throw body.errors[0];
     }
 
@@ -194,18 +193,20 @@ export async function createCustomer(input: CustomerInput): Promise<user> {
     cache: "no-store",
   });
 
-  console.log(res);
   return res.body.data.customerCreate.customer;
 }
 
-export async function getCustomerAccessToken(
-  input: Partial<CustomerInput>,
-): Promise<any> {
+export async function getCustomerAccessToken({
+  email,
+  password,
+}: Partial<CustomerInput>): Promise<any> {
   const res = await shopifyFetch<any>({
     query: getCustomerAccessTokenMutation,
-    variables: { input },
+    variables: { input: { email, password } },
   });
-  return res.body;
+
+  return res.body.data.customerAccessTokenCreate.customerAccessToken
+    .accessToken;
 }
 const reshapeCart = (cart: ShopifyCart): Cart => {
   if (!cart.cost?.totalTaxAmount) {

@@ -8,10 +8,11 @@ export async function getUserData(formData: IUser): Promise<IUser> {
     },
     body: JSON.stringify(formData),
   });
+
   return await res.json();
 }
 
-export async function userRegistation(formData: IUser) {
+export async function userRegistation(formData: IUser): Promise<IUser> {
   try {
     const res = await fetch("/api/customer/register", {
       method: "POST",
@@ -20,9 +21,7 @@ export async function userRegistation(formData: IUser) {
         "Content-Type": "application/json",
       },
     });
-
-    return await res.json();
-  } catch (error: any) {
-    console.log(error?.message);
-  }
+    const data = await res.json();
+    return data;
+  } catch (error) {}
 }

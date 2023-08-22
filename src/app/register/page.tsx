@@ -1,6 +1,8 @@
 "use client";
 
 import { ShopifyCustomer } from "@/lib/shopify/types";
+import { createUser } from "@/redux/features/user/userSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
 
@@ -9,27 +11,21 @@ type key = keyof ShopifyCustomer;
 const Register = () => {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { error, user } = useAppSelector((state) => state.user);
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.currentTarget as HTMLFormElement;
-    const formData = Object.fromEntries(new FormData(form)) as any;
-
+    const formData = Object.fromEntries(new FormData(form));
     startTransition(async () => {
-      try {
-        const res = await fetch("/api/customer/register", {
-          method: "POST",
-          body: JSON.stringify(formData),
-          headers: {
-            "Content-Type": "application/json",
-          },
+      dispatch(createUser(formData as any))
+        .unwrap()
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          console.log("I am rejected");
         });
-        const data = await res.json();
-        console.log(data);
-        alert("login successfull");
-        router.push("/");
-      } catch (error: any) {
-        console.log(error?.message);
-      }
     });
   };
 
@@ -87,7 +83,7 @@ const Register = () => {
                 </div>
               </form>
               <p className="mt-3">
-                Already hava an account ?<a href="/register"> Login</a>
+                Already hava an account ?<a href="/login"> Login</a>
               </p>
               <p>
                 <a href="forget-password.html"> Forgot your password?</a>
