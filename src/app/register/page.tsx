@@ -21,10 +21,10 @@ const Register = () => {
       dispatch(createUser(formData as any))
         .unwrap()
         .then((res) => {
-          console.log(res);
+          console.log("I am response");
         })
         .catch((error) => {
-          console.log("I am rejected");
+          console.log(error);
         });
     });
   };

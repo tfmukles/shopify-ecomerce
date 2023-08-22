@@ -1,6 +1,7 @@
 import { HIDDEN_PRODUCT_TAG, SHOPIFY_GRAPHQL_API_ENDPOINT } from "../constants";
 import { isShopifyError } from "../type-gurds";
 import { ensureStartsWith } from "../utils";
+import { errorMessage } from "../utils/extractErrorMessage";
 import {
   addToCartMutation,
   createCartMutation,
@@ -76,6 +77,10 @@ export async function shopifyFetch<T>({
     });
 
     const body = await result.json();
+    const errorMessages = errorMessage(body);
+    if (!!errorMessages) {
+      throw errorMessages;
+    }
 
     if (body.errors) {
       throw body.errors[0];
@@ -87,7 +92,6 @@ export async function shopifyFetch<T>({
     };
   } catch (e) {
     if (isShopifyError(e)) {
-      console.log({ e });
       throw {
         cause: e.cause?.toString() || "unknown",
         status: e.status || 500,

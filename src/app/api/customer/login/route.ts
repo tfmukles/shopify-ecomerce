@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
       data?.customerAccessTokenCreate?.customerAccessToken.accessToken;
     const { customer } = await getUserDetails(token);
     return NextResponse.json({ ...customer, token });
-  } catch (error) {
-    return NextResponse.json(error);
+  } catch (error: any) {
+    return NextResponse.json(error.error, { status: 500 });
   }
 }
