@@ -80,4 +80,5 @@ export interface IUser {
   phone: string | null;
   email: string;
   acceptsMarketing: boolean;
+  token?: string;
 }

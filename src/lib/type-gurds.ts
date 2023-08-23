@@ -7,9 +7,7 @@ export interface ShopifyErrorLike {
 export const isObject = (
   object: unknown,
 ): object is Record<string, unknown> => {
-  return (
-    typeof object === "object" && object !== null && !Array.isArray(object)
-  );
+  return typeof object === "object" && object !== null;
 };
 
 export const isShopifyError = (error: unknown): error is ShopifyErrorLike => {

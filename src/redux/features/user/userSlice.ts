@@ -13,13 +13,17 @@ const initialState: userState = {
   isLoading: false,
   isError: false,
   error: null,
-  user: {
-    firstName: "",
-    lastName: "",
-    phone: null,
-    email: "",
-    acceptsMarketing: false,
-  },
+  user:
+    typeof window === "undefined"
+      ? {
+          firstName: "",
+          lastName: "",
+          email: "",
+          acceptsMarketing: false,
+          phone: null,
+          id: "",
+        }
+      : JSON.parse(localStorage.getItem("user") || "{}"),
 };
 
 export const userSlice = createSlice({
@@ -41,12 +45,14 @@ export const userSlice = createSlice({
         error: null,
         user: payload,
       }))
-      .addCase(getUser.rejected, (state, { error }) => ({
-        ...state,
-        isLoading: false,
-        isError: true,
-        error,
-      }));
+      .addCase(getUser.rejected, (state, { payload }) => {
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+          error: payload?.response?.data,
+        };
+      });
 
     builder.addCase(createUser.fulfilled, (state, { payload }) => ({
       ...state,

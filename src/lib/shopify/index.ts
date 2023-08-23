@@ -1,7 +1,7 @@
 import { HIDDEN_PRODUCT_TAG, SHOPIFY_GRAPHQL_API_ENDPOINT } from "../constants";
-import { isShopifyError } from "../type-gurds";
+import { isObject, isShopifyError } from "../type-gurds";
 import { ensureStartsWith } from "../utils";
-import { errorMessage } from "../utils/extractErrorMessage";
+import { captureError } from "../utils/captureError";
 import {
   addToCartMutation,
   createCartMutation,
@@ -77,8 +77,12 @@ export async function shopifyFetch<T>({
     });
 
     const body = await result.json();
-    const errorMessages = errorMessage(body);
-    if (!!errorMessages) {
+    const errorMessages = captureError(body) as any;
+    const hasErrors = isObject(errorMessages)
+      ? Object.keys(errorMessages)?.length > 0
+      : errorMessages?.length > 0;
+
+    if (hasErrors) {
       throw errorMessages;
     }
 
@@ -113,7 +117,6 @@ const removeEdgesAndNodes = (array: Connection<any>) => {
 
 const reshapeImages = (images: Connection<Image>, productTitle: string) => {
   const flattened = removeEdgesAndNodes(images);
-
   return flattened.map((image) => {
     const filename = image.url.match(/.*\/(.*)\..*/)[1];
     return {
@@ -209,8 +212,10 @@ export async function getCustomerAccessToken({
     variables: { input: { email, password } },
   });
 
-  return res.body.data.customerAccessTokenCreate.customerAccessToken
-    .accessToken;
+  const token =
+    res.body.data.customerAccessTokenCreate.customerAccessToken.accessToken;
+
+  return token;
 }
 const reshapeCart = (cart: ShopifyCart): Cart => {
   if (!cart.cost?.totalTaxAmount) {
@@ -296,6 +301,8 @@ export async function getOrders() {
     variables: {},
     cache: "no-store",
   });
+
+  console.log(res);
 }
 
 export async function getUserDetails(accessToken: string): Promise<user> {

@@ -123,9 +123,9 @@ const Header = () => {
                 shop
               </Link>
               <div className="dropdown-menu">
-                <a className="dropdown-item" href="shop.html">
+                <Link className="dropdown-item" href="/products">
                   Shop
-                </a>
+                </Link>
                 <a className="dropdown-item" href="shop-list.html">
                   Shop List
                 </a>
@@ -164,6 +164,13 @@ const Header = () => {
                 pages
               </a>
               <div className="dropdown-menu">
+                <Link className="dropdown-item" href="/login">
+                  Login
+                </Link>
+
+                <Link className="dropdown-item" href="/register">
+                  Sign up
+                </Link>
                 <a className="dropdown-item" href="about.html">
                   About Us
                 </a>
@@ -293,9 +300,11 @@ const Header = () => {
                   </ul>
                 </div>
                 <div className="mx-3 mega-megu-image">
-                  <img
+                  <Image
+                    width={300}
+                    height={300}
                     className="img-fluid h-100"
-                    src="images/mega-megu.jpg"
+                    src="/images/mega-megu.jpg"
                     alt="feature-img"
                   />
                 </div>

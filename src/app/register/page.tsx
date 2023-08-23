@@ -1,31 +1,45 @@
 "use client";
 
-import { ShopifyCustomer } from "@/lib/shopify/types";
 import { createUser } from "@/redux/features/user/userApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { AxiosError } from "axios";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
-
-type key = keyof ShopifyCustomer;
+import { useEffect, useTransition } from "react";
+import { toast } from "react-toastify";
 
 const Register = () => {
-  const [isPending, startTransition] = useTransition();
-  const router = useRouter();
   const dispatch = useAppDispatch();
-  const { error, user } = useAppSelector((state) => state.user);
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const { user } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    if (user?.token) {
+      router.push("/");
+    }
+  }, [user?.token, router]);
+
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.currentTarget as HTMLFormElement;
     const formData = Object.fromEntries(new FormData(form));
     startTransition(async () => {
-      dispatch(createUser(formData as any))
-        .unwrap()
-        .then((res) => {
-          console.log("I am response");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      try {
+        const response = await dispatch(createUser(formData as any)).unwrap();
+        toast.success("Account is created sucessfully!");
+        localStorage.setItem("user", JSON.stringify(response));
+        router.push("/");
+      } catch (error: AxiosError | any) {
+        const errorResponse = error.response?.data as any;
+        if (errorResponse?.message) {
+          toast.error(errorResponse.message ?? "Something went wrong");
+          return;
+        }
+
+        toast.error("Something went wrong");
+      }
     });
   };
 
@@ -35,9 +49,14 @@ const Register = () => {
         <div className="row">
           <div className="col-md-6 mx-auto">
             <div className="block text-center">
-              <a className="logo" href="index.html">
-                <img src="images/logo.png" alt="logo" />
-              </a>
+              <Link className="logo" href="/">
+                <Image
+                  width={169}
+                  height={40}
+                  src="/images/logo.png"
+                  alt="logo"
+                />
+              </Link>
               <h2 className="text-center">Create Your Account</h2>
               <form onSubmit={submitHandler} className="text-left clearfix">
                 <div className="form-group">
@@ -83,7 +102,7 @@ const Register = () => {
                 </div>
               </form>
               <p className="mt-3">
-                Already hava an account ?<a href="/login"> Login</a>
+                Already hava an account ?<Link href="/login"> Login</Link>
               </p>
               <p>
                 <a href="forget-password.html"> Forgot your password?</a>
