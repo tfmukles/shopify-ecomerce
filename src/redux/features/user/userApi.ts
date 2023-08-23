@@ -1,22 +1,25 @@
-import { fetchWithErrors } from "@/lib/utils/fetch";
 import { IUser } from "@/types";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
-export async function getUserData(formData: IUser): Promise<IUser> {
-  const data = await fetchWithErrors(`/api/customer/login`, {
-    method: "POST",
-    body: JSON.stringify(formData),
-  });
+export const getUser = createAsyncThunk(
+  "get/customer",
+  async (formData: IUser) => {
+    try {
+      const { data } = await axios.post(`/api/customer/login`, formData);
+      return data;
+    } catch (error) {}
+  },
+);
 
-  return data;
-}
-
-export async function userRegistation(formData: IUser): Promise<IUser> {
-  const data = await fetchWithErrors(`/api/customer/register`, {
-    method: "POST",
-    body: JSON.stringify(formData),
-  });
-
-  console.log(data);
-
-  return data;
-}
+export const createUser = createAsyncThunk(
+  "create/customer",
+  async (formData: IUser, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(`/api/customer/register`, formData);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);

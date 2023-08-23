@@ -1,7 +1,7 @@
 "use client";
 
 import { ShopifyCustomer } from "@/lib/shopify/types";
-import { createUser } from "@/redux/features/user/userSlice";
+import { createUser } from "@/redux/features/user/userApi";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";

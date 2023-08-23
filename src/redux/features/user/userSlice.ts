@@ -1,6 +1,6 @@
 import { IUser } from "@/types";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { getUserData, userRegistation } from "./userApi";
+import { createSlice } from "@reduxjs/toolkit";
+import { createUser, getUser } from "./userApi";
 
 export interface userState {
   isLoading: boolean;
@@ -21,9 +21,6 @@ const initialState: userState = {
     acceptsMarketing: false,
   },
 };
-
-export const getUser = createAsyncThunk("fetch/user", getUserData);
-export const createUser = createAsyncThunk("create/user", userRegistation);
 
 export const userSlice = createSlice({
   name: "user",
