@@ -262,17 +262,21 @@ export type customerToken = {
   };
 };
 
-export type ShopifyOrder = {};
+export type ShopifyOrder = {
+  lineItems: Connection<{
+    quantity: number;
+    title: string;
+    varient: {
+      id: string;
+      image: Image;
+    };
+  }>;
+};
 
 export type ShopifyOrderOperation = {
   data: {
     customer: {
-      fistName: string;
-      lastName: string;
-      id: string;
-      orders: {
-        edges: Connection<ShopifyOrder>;
-      };
+      orders: Connection<ShopifyOrder>;
     };
   };
   variables: {

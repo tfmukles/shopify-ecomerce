@@ -1,57 +1,43 @@
 export const getOrder = /* GraphQL */ `
   query getOrders($token: String!) {
     customer(customerAccessToken: $token) {
-      id
-      firstName
       orders(first: 10) {
         edges {
           node {
+            currentTotalPrice {
+              amount
+              currencyCode
+            }
+            id
+            cancelReason
+            totalShippingPrice {
+              amount
+              currencyCode
+            }
+            fulfillmentStatus
+            financialStatus
+            orderNumber
+            currentTotalTax {
+              amount
+              currencyCode
+            }
             lineItems(first: 10) {
               edges {
                 node {
                   quantity
                   title
-                }
-              }
-            }
-            processedAt
-            id
-            cancelReason
-            customerUrl
-            billingAddress {
-              city
-              phone
-            }
-            financialStatus
-            fulfillmentStatus
-            shippingAddress {
-              zip
-              city
-              country
-            }
-            orderNumber
-            totalShippingPrice {
-              amount
-              currencyCode
-            }
-            currentTotalPrice {
-              amount
-              currencyCode
-            }
-
-            email
-          }
-        }
-      }
-      lastIncompleteCheckout {
-        order {
-          currencyCode
-          email
-          lineItems(first: 10) {
-            edges {
-              node {
-                customAttributes {
-                  value
+                  originalTotalPrice {
+                    amount
+                    currencyCode
+                  }
+                  variant {
+                    id
+                    image {
+                      width
+                      height
+                      url
+                    }
+                  }
                 }
               }
             }

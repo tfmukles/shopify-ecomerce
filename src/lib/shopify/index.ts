@@ -161,6 +161,8 @@ const reshapeProducts = (products: ShopifyProduct[]) => {
   return reshapedProducts;
 };
 
+const reShapeOrders = (Orders: any) => {};
+
 export async function getProducts({
   query,
   reverse,
