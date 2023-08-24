@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
@@ -100,8 +101,8 @@ const HeroSlider = () => {
                   </p>
                   {/* <!-- end description --> */}
                   {/* <!-- Start button --> */}
-                  <a
-                    href="shop.html"
+                  <Link
+                    href="/products"
                     className="btn btn-primary"
                     data-duration-in=".5"
                     data-animation-in="fadeInLeft"
@@ -111,7 +112,7 @@ const HeroSlider = () => {
                     data-duration-out=".3"
                   >
                     shop now
-                  </a>
+                  </Link>
                   {/* <!-- end button --> */}
                 </div>
                 {/* <!-- Start slide image --> */}

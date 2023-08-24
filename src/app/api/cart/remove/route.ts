@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   const { lineIds } = await req.json();
+  console.log(lineIds);
   const cartId = cookies().get("cartId")?.value;
   if (cartId) {
     const res = await removeFromCart(cartId, lineIds);

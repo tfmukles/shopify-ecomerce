@@ -1,4 +1,6 @@
 import { Cart } from "@/lib/shopify/types";
+import { createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 //fetching cart lsits
 export async function getCarts(): Promise<Cart> {
@@ -48,3 +50,16 @@ export async function updateItemQuantity({
 
   return await response.json();
 }
+
+//REMOVE ITEM FORM CART
+export const removeCartItem = createAsyncThunk(
+  "remove/cart",
+  async (lineIds: string[], { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post("/api/cart/remove", { lineIds });
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);

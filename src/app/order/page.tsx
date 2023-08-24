@@ -9,7 +9,6 @@ import { useEffect, useTransition } from "react";
 const Order = () => {
   const { user } = useAppSelector((state) => state.user);
   const { order } = useAppSelector((state) => state.order);
-  console.log(user);
   const token = user?.token;
   const [isLoading, setTranstion] = useTransition();
   const dispatch = useAppDispatch();

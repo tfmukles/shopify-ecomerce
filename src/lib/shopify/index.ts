@@ -26,6 +26,7 @@ import {
   ShopifyCart,
   ShopifyCartOperation,
   ShopifyCreateCartOperation,
+  ShopifyOrderOperation,
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductsOperation,
@@ -296,13 +297,13 @@ export async function removeFromCart(
 }
 
 export async function getOrders(token: string) {
-  const res = await shopifyFetch<any>({
+  const res = await shopifyFetch<ShopifyOrderOperation>({
     query: getOrder,
     variables: { token },
     cache: "no-store",
   });
 
-  console.log(res);
+  return res.body.data.customer;
 }
 
 export async function getUserDetails(accessToken: string): Promise<user> {

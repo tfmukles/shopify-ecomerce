@@ -261,3 +261,21 @@ export type customerToken = {
     customerUserErrors: unknown;
   };
 };
+
+export type ShopifyOrder = {};
+
+export type ShopifyOrderOperation = {
+  data: {
+    customer: {
+      fistName: string;
+      lastName: string;
+      id: string;
+      orders: {
+        edges: Connection<ShopifyOrder>;
+      };
+    };
+  };
+  variables: {
+    token: string;
+  };
+};

@@ -1,6 +1,11 @@
 import { Cart } from "@/lib/shopify/types";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addtoCart, getCarts, updateItemQuantity } from "./cartApi";
+import {
+  addtoCart,
+  getCarts,
+  removeCartItem,
+  updateItemQuantity,
+} from "./cartApi";
 
 interface cartState {
   isLoading: boolean;
@@ -51,6 +56,20 @@ export const cartslice = createSlice({
         error: error,
       }));
     builder.addCase(updateProductQuantity.fulfilled, (state, { payload }) => {
+      return {
+        ...state,
+        cart: payload,
+      };
+    });
+
+    builder.addCase(addCartItem.fulfilled, (state, { payload }) => {
+      return {
+        ...state,
+        cart: payload,
+      };
+    });
+
+    builder.addCase(removeCartItem.fulfilled, (state, { payload }) => {
       return {
         ...state,
         cart: payload,

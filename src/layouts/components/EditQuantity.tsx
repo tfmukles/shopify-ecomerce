@@ -23,13 +23,19 @@ const EditType = ({
       disabled={isPending}
       className="border-0"
       onClick={() =>
-        dispatch(
-          updateProductQuantity({
-            variantId,
-            quantity: type === "minus" ? quantity - 1 : quantity + 1,
-            lineId,
-          }),
-        )
+        startTransition(async () => {
+          try {
+            await dispatch(
+              updateProductQuantity({
+                variantId,
+                quantity: type === "minus" ? quantity - 1 : quantity + 1,
+                lineId,
+              }),
+            ).unwrap();
+          } catch (error) {
+            console.log(error);
+          }
+        })
       }
     >
       {type === "minus" ? "-" : "+"}

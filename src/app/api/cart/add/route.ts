@@ -17,5 +17,6 @@ export async function POST(req: NextRequest) {
   }
 
   const res = await addToCart(cartId, variantId);
+  console.log(JSON.stringify(cart));
   return NextResponse.json(res);
 }

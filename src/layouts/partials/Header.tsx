@@ -4,15 +4,13 @@ import EditType from "@/components/EditQuantity";
 import config from "@/config/config.json";
 import menu from "@/config/menu.json";
 import DynamicIcon from "@/helpers/DynamicIcon";
-import {
-  fetchCarts,
-  updateProductQuantity,
-} from "@/redux/features/cart/cartSlice";
+import { removeCartItem } from "@/redux/features/cart/cartApi";
+import { fetchCarts } from "@/redux/features/cart/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 
 //  child navigation link interface
 export interface IChildNavigationLink {
@@ -48,31 +46,7 @@ const Header = () => {
     dispatch(fetchCarts());
   }, [dispatch]);
 
-  const updateItemQuantity = async ({
-    variantId,
-    quantity,
-    lineId,
-  }: {
-    variantId: string;
-    quantity: number;
-    lineId: string;
-  }) => {
-    dispatch(updateProductQuantity({ variantId, quantity, lineId }));
-  };
-
-  async function removeFromCart(lineIds: string[]) {
-    const response = await fetch("/api/cart/remove", {
-      method: "POST",
-      body: JSON.stringify({
-        lineIds,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await response.json();
-    dispatch({ type: "success", payload: data });
-  }
+  const [isPending, startTransition] = useTransition();
 
   return (
     <>
@@ -422,7 +396,14 @@ const Header = () => {
                             </div>
                             <button
                               className="border-0"
-                              onClick={() => removeFromCart([line.id])}
+                              disabled={isPending}
+                              onClick={() =>
+                                startTransition(async () => {
+                                  await dispatch(
+                                    removeCartItem([line.id]),
+                                  ).unwrap();
+                                })
+                              }
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"

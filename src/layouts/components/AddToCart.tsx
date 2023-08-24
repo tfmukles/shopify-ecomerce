@@ -2,7 +2,7 @@
 
 import { ProductVariant } from "@/lib/shopify/types";
 import { addCartItem } from "@/redux/features/cart/cartSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch } from "@/redux/hooks";
 import { useTransition } from "react";
 
 const AddToCart = ({
@@ -14,16 +14,11 @@ const AddToCart = ({
 }) => {
   const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
-  const { cart } = useAppSelector((state) => state.cart);
-  // console.log({ cart, isPending });
 
   const addCart = () => {
     if (!selectedVariant?.availableForSale) return;
     startTransition(async () => {
-      // call the item add
-      await dispatch(addCartItem(selectedVariant.id));
-      // const data = await addtoCart(selectedVariant.id);
-      // console.log(data);
+      await dispatch(addCartItem(selectedVariant.id)).unwrap();
     });
   };
 

@@ -5,7 +5,6 @@ export async function POST(req: NextRequest) {
   try {
     const input = await req.json();
     const token = await getCustomerAccessToken(input);
-
     const { customer } = await getUserDetails(token);
     return NextResponse.json({ ...customer, token });
   } catch (error: any) {

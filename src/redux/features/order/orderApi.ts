@@ -1,4 +1,3 @@
-import { RootState } from "@/redux/store";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios, { AxiosError } from "axios";
 
@@ -8,12 +7,10 @@ export const getOrderLists = createAsyncThunk<
   {
     rejectValue: AxiosError;
   }
->("get/order", async (_, { rejectWithValue, getState }) => {
+>("get/order", async (token, { rejectWithValue, getState }) => {
   try {
-    const { user } = (getState() as RootState).user;
-    console.log(user);
-    const { data } = await axios.get("/api/order/list", { params: "" });
-    return data;
+    const { data } = await axios.post("/api/order/list", { token });
+    console.log({ data });
   } catch (error) {
     console.log(error);
     return rejectWithValue(error as AxiosError);

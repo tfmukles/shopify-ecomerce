@@ -3,13 +3,58 @@ export const getOrder = /* GraphQL */ `
     customer(customerAccessToken: $token) {
       id
       firstName
-      lastName
       orders(first: 10) {
         edges {
           node {
+            lineItems(first: 10) {
+              edges {
+                node {
+                  quantity
+                  title
+                }
+              }
+            }
+            processedAt
             id
-            name
+            cancelReason
+            customerUrl
+            billingAddress {
+              city
+              phone
+            }
+            financialStatus
             fulfillmentStatus
+            shippingAddress {
+              zip
+              city
+              country
+            }
+            orderNumber
+            totalShippingPrice {
+              amount
+              currencyCode
+            }
+            currentTotalPrice {
+              amount
+              currencyCode
+            }
+
+            email
+          }
+        }
+      }
+      lastIncompleteCheckout {
+        order {
+          currencyCode
+          email
+          lineItems(first: 10) {
+            edges {
+              node {
+                customAttributes {
+                  value
+                }
+              }
+            }
           }
         }
       }
