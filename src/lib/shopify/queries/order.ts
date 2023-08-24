@@ -1,6 +1,6 @@
 export const getOrder = /* GraphQL */ `
-  query getOrders($input: String!) {
-    customer(customerAccessToken: $input) {
+  query getOrders($token: String!) {
+    customer(customerAccessToken: $token) {
       id
       firstName
       lastName

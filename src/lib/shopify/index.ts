@@ -295,10 +295,10 @@ export async function removeFromCart(
   return reshapeCart(res.body.data.cartLinesRemove.cart);
 }
 
-export async function getOrders() {
+export async function getOrders(token: string) {
   const res = await shopifyFetch<any>({
     query: getOrder,
-    variables: {},
+    variables: { token },
     cache: "no-store",
   });
 
