@@ -1,65 +1,86 @@
 import { Cart } from "@/lib/shopify/types";
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { shopifyApiSlice } from "@/redux/api/shopifySlice";
+import { toast } from "react-toastify";
 
-//fetching cart lsits
-export async function getCarts(): Promise<Cart> {
-  const response = await fetch("/api/cart/get", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  return await response.json();
-}
-
-// add cart item into list
-export async function addtoCart(variantId: string): Promise<Cart> {
-  const res = await fetch("/api/cart/add", {
-    method: "POST",
-    body: JSON.stringify({
-      variantId,
+export const cartApi = shopifyApiSlice.injectEndpoints({
+  endpoints: (build) => ({
+    getCarts: build.query<Cart, void>({
+      query: () => ({ url: "/cart/get", method: "get" }),
+      async onQueryStarted(arg, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+        } catch (error: any) {
+          toast.error(error.error.data);
+        }
+      },
     }),
-  });
 
-  return await res.json();
-}
-
-//update cart product quantity
-export async function updateItemQuantity({
-  variantId,
-  quantity,
-  lineId,
-}: {
-  variantId: string;
-  quantity: number;
-  lineId: string;
-}): Promise<Cart> {
-  const response = await fetch("/api/cart/update", {
-    method: "POST",
-    body: JSON.stringify({
-      variantId,
-      quantity,
-      lineId,
+    addCart: build.mutation<Cart, string>({
+      query: (variantId) => ({
+        url: "/cart/add",
+        method: "post",
+        data: { variantId },
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            cartApi.util.updateQueryData("getCarts", undefined, (draft) => {
+              return data;
+            }),
+          );
+        } catch (error: any) {
+          toast.error(error.error.data);
+        }
+      },
     }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
 
-  return await response.json();
-}
+    updateItemQuantity: build.mutation<
+      Cart,
+      { variantId: string; quantity: number; lineId: string }
+    >({
+      query: (data) => {
+        return { url: "/cart/update", method: "post", data };
+      },
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            cartApi.util.updateQueryData("getCarts", undefined, (draft) => {
+              return data;
+            }),
+          );
+        } catch (error: any) {
+          toast.error(error.error.data);
+        }
+      },
+    }),
 
-//REMOVE ITEM FORM CART
-export const removeCartItem = createAsyncThunk(
-  "remove/cart",
-  async (lineIds: string[], { rejectWithValue }) => {
-    try {
-      const { data } = await axios.post("/api/cart/remove", { lineIds });
-      return data;
-    } catch (error) {
-      return rejectWithValue(error);
-    }
-  },
-);
+    removeCartItem: build.mutation<Cart, string[]>({
+      query: (lineIds) => ({
+        url: "/cart/remove",
+        method: "post",
+        data: { lineIds },
+      }),
+      async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(
+            cartApi.util.updateQueryData("getCarts", undefined, (draft) => {
+              return data;
+            }),
+          );
+        } catch (error: any) {
+          toast.error(error.error.data);
+        }
+      },
+    }),
+  }),
+});
+
+export const {
+  useGetCartsQuery,
+  useAddCartMutation,
+  useRemoveCartItemMutation,
+  useUpdateItemQuantityMutation,
+} = cartApi;

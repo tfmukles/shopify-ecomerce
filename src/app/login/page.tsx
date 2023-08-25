@@ -1,45 +1,29 @@
 "use client";
 
-import { getUser } from "@/redux/features/user/userApi";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { AxiosError } from "axios";
+import { useLoginMutation } from "@/redux/features/account/accountApi";
+import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect } from "react";
-import { toast } from "react-toastify";
 
 const Login = () => {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const { isLoading, isError, error, user } = useAppSelector(
-    (state) => state.user,
-  );
+  const { token } = useAppSelector((state) => state.account);
+  const [login, { isLoading }] = useLoginMutation();
 
   useEffect(() => {
-    if (user?.token) {
+    if (token) {
       router.push("/");
     }
-  }, [user?.token, router]);
+  }, [token]);
 
   const submitHanlder = async (e: FormEvent) => {
     e.preventDefault();
     const formData = Object.fromEntries(
       new FormData(e.currentTarget as HTMLFormElement),
     );
-    try {
-      const response = await dispatch(getUser(formData as any)).unwrap();
-      localStorage.setItem("user", JSON.stringify(response));
-      toast.success("Login sucessfully!");
-      router.push("/");
-    } catch (error: AxiosError | any) {
-      const errorResponse = error.response?.data as any;
-      if (errorResponse?.message) {
-        toast.error(errorResponse.message ?? "Something went wrong");
-        return;
-      }
-      toast.error("Something went wrong");
-    }
+    login(formData);
   };
 
   return (

@@ -25,6 +25,8 @@ export const getCustomerAccessTokenMutation = /* GraphQL */ `
       }
       customerUserErrors {
         message
+        code
+        field
       }
     }
   }

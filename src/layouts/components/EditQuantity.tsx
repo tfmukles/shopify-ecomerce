@@ -1,9 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
-
-import { updateProductQuantity } from "@/redux/features/cart/cartSlice";
-import { useAppDispatch } from "@/redux/hooks";
+import { useUpdateItemQuantityMutation } from "@/redux/features/cart/cartApi";
 
 const EditType = ({
   variantId,
@@ -16,25 +13,17 @@ const EditType = ({
   lineId: string;
   type: "minus" | "plus";
 }) => {
-  const dispatch = useAppDispatch();
-  const [isPending, startTransition] = useTransition();
+  const [updateProductQuantity, { isLoading }] =
+    useUpdateItemQuantityMutation();
   return (
     <button
-      disabled={isPending}
+      disabled={isLoading}
       className="border-0"
       onClick={() =>
-        startTransition(async () => {
-          try {
-            await dispatch(
-              updateProductQuantity({
-                variantId,
-                quantity: type === "minus" ? quantity - 1 : quantity + 1,
-                lineId,
-              }),
-            ).unwrap();
-          } catch (error) {
-            console.log(error);
-          }
+        updateProductQuantity({
+          variantId,
+          quantity: type === "minus" ? quantity - 1 : quantity + 1,
+          lineId,
         })
       }
     >

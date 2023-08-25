@@ -3,11 +3,15 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const { lineIds } = await req.json();
-  console.log(lineIds);
-  const cartId = cookies().get("cartId")?.value;
-  if (cartId) {
-    const res = await removeFromCart(cartId, lineIds);
-    return NextResponse.json(res);
+  try {
+    const { lineIds } = await req.json();
+    const cartId = cookies().get("cartId")?.value;
+    if (cartId) {
+      const res = await removeFromCart(cartId, lineIds);
+      return NextResponse.json(res);
+    }
+  } catch (error: any) {
+    const { message, status } = error.error;
+    return NextResponse.json(message, { status });
   }
 }

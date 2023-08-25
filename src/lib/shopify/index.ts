@@ -216,7 +216,7 @@ export async function getCustomerAccessToken({
   });
 
   const token =
-    res.body.data.customerAccessTokenCreate.customerAccessToken.accessToken;
+    res.body.data?.customerAccessTokenCreate?.customerAccessToken?.accessToken;
 
   return token;
 }

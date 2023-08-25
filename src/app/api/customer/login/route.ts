@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
     const { customer } = await getUserDetails(token);
     return NextResponse.json({ ...customer, token });
   } catch (error: any) {
-    return NextResponse.json({ message: error.error }, { status: 500 });
+    const { message, status } = error.error;
+    return NextResponse.json(message, { status });
   }
 }

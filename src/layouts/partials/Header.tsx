@@ -4,9 +4,11 @@ import EditType from "@/components/EditQuantity";
 import config from "@/config/config.json";
 import menu from "@/config/menu.json";
 import DynamicIcon from "@/helpers/DynamicIcon";
-import { removeCartItem } from "@/redux/features/cart/cartApi";
-import { fetchCarts } from "@/redux/features/cart/cartSlice";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import {
+  useGetCartsQuery,
+  useRemoveCartItemMutation,
+} from "@/redux/features/cart/cartApi";
+import { useAppDispatch } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -34,18 +36,16 @@ const Header = () => {
   const pathname = usePathname();
 
   const dispatch = useAppDispatch();
-  const { cart } = useAppSelector((state) => state.cart);
+  const { isLoading, data: cart } = useGetCartsQuery();
+
+  const [removeCartItem, { isLoading: isRemoving }] =
+    useRemoveCartItemMutation();
 
   // scroll to top on route change
   useEffect(() => {
     window.scroll(0, 0);
   }, [pathname]);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    dispatch(fetchCarts());
-  }, [dispatch]);
-
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -378,32 +378,30 @@ const Header = () => {
                               <span>{line.quantity}</span> X{" "}
                               <span>${line.cost.totalAmount.amount}</span>
                               <div className="d-flex mt-3">
-                                <EditType
-                                  lineId={line.id}
-                                  quantity={line.quantity}
-                                  variantId={line.merchandise.id}
-                                  type="plus"
-                                />
-
                                 <p className="mx-2 mb-0">{line.quantity}</p>
-                                <EditType
-                                  lineId={line.id}
-                                  quantity={line.quantity}
-                                  variantId={line.merchandise.id}
-                                  type="minus"
-                                />
+                                <div className="d-flex gap-2">
+                                  <EditType
+                                    lineId={line.id}
+                                    quantity={line.quantity}
+                                    variantId={line.merchandise.id}
+                                    type="minus"
+                                  />
+
+                                  <EditType
+                                    lineId={line.id}
+                                    quantity={line.quantity}
+                                    variantId={line.merchandise.id}
+                                    type="plus"
+                                  />
+                                </div>
                               </div>
                             </div>
                             <button
                               className="border-0"
-                              disabled={isPending}
-                              onClick={() =>
-                                startTransition(async () => {
-                                  await dispatch(
-                                    removeCartItem([line.id]),
-                                  ).unwrap();
-                                })
-                              }
+                              disabled={isRemoving}
+                              onClick={() => {
+                                removeCartItem([line.id]);
+                              }}
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"

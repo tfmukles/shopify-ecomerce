@@ -2,13 +2,16 @@ import { getCart } from "@/lib/shopify";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
-  let cart;
-  let cartId = cookies().get("cartId")?.value;
-  console.log(cartId);
-  if (cartId) {
-    cart = await getCart(cartId);
+export async function GET(req: NextRequest) {
+  try {
+    let cart;
+    let cartId = cookies().get("cartId")?.value;
+    if (cartId) {
+      cart = await getCart(cartId);
+    }
+    return NextResponse.json(cart || {});
+  } catch (error: any) {
+    const { message, status } = error.error;
+    return NextResponse.json(message, { status });
   }
-
-  return NextResponse.json(cart || {});
 }

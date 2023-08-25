@@ -1,9 +1,7 @@
 "use client";
 
 import { ProductVariant } from "@/lib/shopify/types";
-import { addCartItem } from "@/redux/features/cart/cartSlice";
-import { useAppDispatch } from "@/redux/hooks";
-import { useTransition } from "react";
+import { useAddCartMutation } from "@/redux/features/cart/cartApi";
 
 const AddToCart = ({
   selectedVariant,
@@ -12,14 +10,10 @@ const AddToCart = ({
   selectedVariant?: ProductVariant;
   className?: string;
 }) => {
-  const [isPending, startTransition] = useTransition();
-  const dispatch = useAppDispatch();
-
+  const [addCartItem, { isLoading }] = useAddCartMutation();
   const addCart = () => {
     if (!selectedVariant?.availableForSale) return;
-    startTransition(async () => {
-      await dispatch(addCartItem(selectedVariant.id)).unwrap();
-    });
+    addCartItem(selectedVariant.id);
   };
 
   const title =
@@ -32,7 +26,7 @@ const AddToCart = ({
   return (
     <button
       onClick={addCart}
-      disabled={!selectedVariant?.availableForSale || isPending}
+      disabled={!selectedVariant?.availableForSale || isLoading}
       className={`btn btn-primary mb-4 ${className}`}
     >
       {title}
