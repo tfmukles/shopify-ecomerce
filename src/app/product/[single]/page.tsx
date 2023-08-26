@@ -66,15 +66,6 @@ const Product = async ({ params }: { params: { single: string } }) => {
                   );
                 })}
               </div>
-
-              {/* <div data-image="images/product-single/product-sm-3.jpg">
-                <img
-                  className="img-fluid w-100 image-zoom"
-                  src="images/product-single/product-sm-3.jpg"
-                  alt="product-img"
-                  data-zoom="images/product-single/product-sm-3.jpg"
-                />
-              </div> */}
             </div>
           </div>
           {/* <!-- produt details --> */}

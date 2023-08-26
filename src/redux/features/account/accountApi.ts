@@ -8,8 +8,10 @@ export const cartApi = shopifyApiSlice.injectEndpoints({
       query: (data) => ({ url: "/customer/login", method: "post", data }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
-          const response = await queryFulfilled;
-          dispatch(setUserDetials(response));
+          const { data } = await queryFulfilled;
+          console.log(data);
+          localStorage.setItem("user", JSON.stringify(data));
+          dispatch(setUserDetials(data));
           toast.success("Login successfully!");
         } catch (error: any) {
           toast.error(error.error.data);
@@ -21,8 +23,9 @@ export const cartApi = shopifyApiSlice.injectEndpoints({
       query: (data) => ({ url: "/customer/register", method: "post", data }),
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
-          const response = await queryFulfilled;
-          dispatch(setUserDetials(response));
+          const { data } = await queryFulfilled;
+          localStorage.setItem("user", JSON.stringify(data));
+          dispatch(setUserDetials(data));
           toast.success("Account created successfully!");
         } catch (error: any) {
           console.log(error);

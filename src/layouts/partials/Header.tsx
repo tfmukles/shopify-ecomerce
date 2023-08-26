@@ -8,11 +8,10 @@ import {
   useGetCartsQuery,
   useRemoveCartItemMutation,
 } from "@/redux/features/cart/cartApi";
-import { useAppDispatch } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 
 //  child navigation link interface
 export interface IChildNavigationLink {
@@ -34,8 +33,6 @@ const Header = () => {
   const { navigation_button, settings } = config;
   // get current path
   const pathname = usePathname();
-
-  const dispatch = useAppDispatch();
   const { isLoading, data: cart } = useGetCartsQuery();
 
   const [removeCartItem, { isLoading: isRemoving }] =
@@ -43,10 +40,13 @@ const Header = () => {
 
   // scroll to top on route change
   useEffect(() => {
-    window.scroll(0, 0);
+    window.scroll({
+      top: 0,
+      behavior: "instant",
+    });
   }, [pathname]);
+
   const [open, setOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   return (
     <>

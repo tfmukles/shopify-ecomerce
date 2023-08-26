@@ -6,6 +6,8 @@ import "@/scss/style.scss";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+export const runtime = "edge";
+
 export default function RootLayout({
   children,
 }: {

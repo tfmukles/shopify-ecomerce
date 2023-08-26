@@ -16,7 +16,7 @@ const Login = () => {
     if (token) {
       router.push("/");
     }
-  }, [token]);
+  }, [token, router]);
 
   const submitHanlder = async (e: FormEvent) => {
     e.preventDefault();

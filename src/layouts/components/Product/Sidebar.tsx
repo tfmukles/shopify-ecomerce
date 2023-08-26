@@ -1,7 +1,11 @@
-const Sidebar = () => {
+import { getCollections } from "@/lib/shopify";
+import CollectionItem from "./Collection-Item";
+
+const Sidebar = async () => {
+  const collections = await getCollections();
+
   return (
-    <div className="col-lg-3">
-      {/* <!-- search product --> */}
+    <>
       <div className="position-relative mb-5">
         <form action="#">
           <input
@@ -19,78 +23,13 @@ const Sidebar = () => {
       <div className="mb-30">
         <h4 className="mb-3">Shop by Categories</h4>
         <ul className="pl-0 shop-list list-unstyled">
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Women’s Clothing</span>
-              <span>9</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Man Fashion</span>
-              <span>5</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Kid’s Clothing</span>
-              <span>3</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Watches & Jewelry</span>
-              <span>2</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Bags & Shoes</span>
-              <span>7</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Toys & Kids</span>
-              <span>1</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Electronics</span>
-              <span>8</span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="#"
-              className="d-flex py-2 text-gray justify-content-between"
-            >
-              <span>Computers</span>
-              <span>11</span>
-            </a>
-          </li>
+          {collections.map((collection, i) => (
+            <CollectionItem
+              key={i}
+              title={collection.title}
+              path={collection.path}
+            />
+          ))}
         </ul>
       </div>
       {/* <!-- price range --> */}
@@ -191,7 +130,7 @@ const Sidebar = () => {
           </li>
         </ul>
       </div>
-    </div>
+    </>
   );
 };
 

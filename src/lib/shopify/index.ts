@@ -14,10 +14,15 @@ import {
   getUserDetailsQuery,
 } from "./mutations/customer";
 import { getCartQuery } from "./queries/cart";
+import {
+  getCollectionProductsQuery,
+  getCollectionsQuery,
+} from "./queries/collection";
 import { getOrder } from "./queries/order";
 import { getProductQuery, getProductsQuery } from "./queries/product";
 import {
   Cart,
+  Collection,
   Connection,
   CustomerInput,
   Image,
@@ -25,6 +30,9 @@ import {
   ShopifyAddToCartOperation,
   ShopifyCart,
   ShopifyCartOperation,
+  ShopifyCollection,
+  ShopifyCollectionProductsOperation,
+  ShopifyCollectionsOperation,
   ShopifyCreateCartOperation,
   ShopifyOrderOperation,
   ShopifyProduct,
@@ -78,6 +86,8 @@ export async function shopifyFetch<T>({
     });
 
     const body = await result.json();
+    // console.log(JSON.stringify(body));
+
     const errorMessages = captureError(body) as any;
     const hasErrors = isObject(errorMessages)
       ? Object.keys(errorMessages)?.length > 0
@@ -318,4 +328,90 @@ export async function getUserDetails(accessToken: string): Promise<user> {
   });
 
   return response.body.data;
+}
+
+const reshapeCollection = (
+  collection: ShopifyCollection,
+): Collection | undefined => {
+  if (!collection) {
+    return undefined;
+  }
+
+  return {
+    ...collection,
+    path: `/products/${collection.handle}`,
+  };
+};
+
+const reshapeCollections = (collections: ShopifyCollection[]) => {
+  const reshapedCollections = [];
+
+  for (const collection of collections) {
+    if (collection) {
+      const reshapedCollection = reshapeCollection(collection);
+
+      if (reshapedCollection) {
+        reshapedCollections.push(reshapedCollection);
+      }
+    }
+  }
+
+  return reshapedCollections;
+};
+
+export async function getCollections(): Promise<Collection[]> {
+  const res = await shopifyFetch<ShopifyCollectionsOperation>({
+    query: getCollectionsQuery,
+  });
+  const shopifyCollections = removeEdgesAndNodes(res.body?.data?.collections);
+  const collections = [
+    {
+      handle: "",
+      title: "All",
+      description: "All products",
+      seo: {
+        title: "All",
+        description: "All products",
+      },
+      path: "/products",
+      updatedAt: new Date().toISOString(),
+    },
+
+    ...reshapeCollections(shopifyCollections).filter(
+      (collection) => !collection.handle.startsWith("hidden"),
+    ),
+  ];
+
+  return collections;
+}
+
+export async function getCollectionProducts({
+  collection,
+  reverse,
+  sortKey,
+}: {
+  collection: string;
+  reverse?: boolean;
+  sortKey?: string;
+}): Promise<Product[]> {
+  const res = await shopifyFetch<ShopifyCollectionProductsOperation>({
+    query: getCollectionProductsQuery,
+    variables: {
+      handle: collection,
+      reverse,
+      sortKey: sortKey === "CREATED_AT" ? "CREATED" : sortKey,
+    },
+  });
+
+  if (!res.body.data.collection) {
+    console.log(`No collection found for \`${collection}\``);
+    return [];
+  }
+
+  const data = reshapeProducts(
+    removeEdgesAndNodes(res.body.data.collection.products),
+  );
+
+  console.log(data.length);
+  return data;
 }
