@@ -1,4 +1,5 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
+import { Product } from "./shopify/types";
 
 export const ensureStartsWith = (stringToCheck: string, startsWith: string) =>
   stringToCheck.startsWith(startsWith)
@@ -10,17 +11,35 @@ export const createUrl = (
   params: URLSearchParams | ReadonlyURLSearchParams,
 ) => {
   const paramsString = params.toString();
-  // console.log({ paramsString });
   const queryString = `${paramsString.length ? "?" : ""}${paramsString}`;
   return `${pathname}${queryString}`;
 };
 
-function mergeSearchParams(params1: URLSearchParams, params2: URLSearchParams) {
-  const mergedParams = new URLSearchParams(params1.toString()); // Clone params1
+export function sortProducts(
+  products: Product[],
+  direction?: "ASC" | "DESC" | "NONE",
+) {
+  return products.slice().sort((a, b) => {
+    const nameA = a.title.toUpperCase();
+    const nameB = b.title.toUpperCase();
 
-  params2.forEach((value, key) => {
-    mergedParams.append(key, value);
+    if (direction === "ASC") {
+      if (nameA < nameB) {
+        return -1;
+      }
+      if (nameA > nameB) {
+        return 1;
+      }
+      return 0;
+    } else if (direction === "DESC") {
+      if (nameA < nameB) {
+        return 1;
+      }
+      if (nameA > nameB) {
+        return -1;
+      }
+      return 0;
+    }
+    return 0;
   });
-
-  return mergedParams;
 }

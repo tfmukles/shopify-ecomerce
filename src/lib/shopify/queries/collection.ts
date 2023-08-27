@@ -39,11 +39,11 @@ export const getCollectionQuery = /* GraphQL */ `
 export const getCollectionProductsQuery = /* GraphQL */ `
   query getCollectionProducts(
     $handle: String!
-    $sortKey: ProductCollectionSortKeys
+    $filterKey: ProductCollectionSortKeys
     $reverse: Boolean
   ) {
     collection(handle: $handle) {
-      products(sortKey: $sortKey, reverse: $reverse, first: 100) {
+      products(sortKey: $filterKey, reverse: $reverse, first: 100) {
         edges {
           node {
             ...product

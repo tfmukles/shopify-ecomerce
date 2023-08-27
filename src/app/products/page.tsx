@@ -1,20 +1,37 @@
 import Product from "@/components/Product/Index";
-import { defaultFiltering } from "@/lib/constants";
+import {
+  defaultFiltering,
+  defaultSort,
+  filtering,
+  sorting,
+} from "@/lib/constants";
 import { getProducts } from "@/lib/shopify";
+import { sortProducts } from "@/lib/utils";
 
-const Products = async () => {
-  const { sortKey, reverse } = defaultFiltering;
-  const products = await getProducts({ sortKey, reverse });
+const Products = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) => {
+  const { filter, sort, q } = searchParams as { [key: string]: string };
+  const { filterKey, reverse } =
+    filtering.find((item) => item.slug === filter) || defaultFiltering;
+  const products = await getProducts({ filterKey, reverse, query: q });
+  const { direction } =
+    sorting.find((item) => item.slug === sort) || defaultSort;
+  const filterProducts = sortProducts(products, direction);
+
+  if (filterProducts.length <= 0) {
+    return <h1 className="text-center mt-5">No products</h1>;
+  }
 
   return (
     <div className="row">
-      {products.map((product, index) => {
-        return (
-          <div className="col-lg-4 col-sm-6 mb-4" key={index}>
-            <Product product={product} />
-          </div>
-        );
-      })}
+      {filterProducts.map((product, index) => (
+        <div className="col-lg-4 col-sm-6 mb-4" key={index}>
+          <Product product={product} />
+        </div>
+      ))}
     </div>
   );
 };

@@ -1,24 +1,11 @@
 "use client";
 
-import { getOrderLists } from "@/redux/features/order/orderApi";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppSelector } from "@/redux/hooks";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useTransition } from "react";
 
 const Order = () => {
-  const { user } = useAppSelector((state) => state.user);
-  const { order } = useAppSelector((state) => state.order);
-  const token = user?.token;
-  const [isLoading, setTranstion] = useTransition();
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    if (token) {
-      setTranstion(async () => {
-        dispatch(getOrderLists(token));
-      });
-    }
-  }, [token, dispatch, setTranstion]);
+  const { token } = useAppSelector((state) => state.account);
 
   return (
     <div className="container">

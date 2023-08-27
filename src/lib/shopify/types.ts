@@ -73,7 +73,7 @@ export type ShopifyCollectionProductsOperation = {
   variables: {
     handle: string;
     reverse?: boolean;
-    sortKey?: string;
+    filterKey?: string;
   };
 };
 
@@ -103,7 +103,7 @@ export type ShopifyProductsOperation = {
   variables: {
     query?: string;
     reverse?: boolean;
-    sortKey?: string;
+    filterKey?: string;
   };
 };
 

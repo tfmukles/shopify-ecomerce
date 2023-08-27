@@ -1,59 +1,72 @@
-export type SortFilterItem = {
+export type FilterItem = {
   title: string;
   slug: string | null;
-  sortKey: "RELEVANCE" | "BEST_SELLING" | "CREATED_AT" | "PRICE" | "TITLE";
+  filterKey: "RELEVANCE" | "BEST_SELLING" | "CREATED_AT" | "PRICE";
   reverse: boolean;
 };
 
-export const defaultFiltering: SortFilterItem = {
+export type SortItem = {
+  title: string;
+  slug: string | null;
+  sortKey: "TITLE";
+  direction: "DESC" | "ASC" | "NONE";
+};
+
+export const defaultFiltering: FilterItem = {
   title: "Relevance",
   slug: null,
-  sortKey: "RELEVANCE",
+  filterKey: "RELEVANCE",
   reverse: false,
 };
 
-export const defaultSort: SortFilterItem = {
-  title: "Relevance",
+export const defaultSort: SortItem = {
+  title: "none",
   slug: null,
-  sortKey: "RELEVANCE",
-  reverse: false,
+  sortKey: "TITLE",
+  direction: "NONE",
 };
 
-export const filtering: SortFilterItem[] = [
+export const filtering: FilterItem[] = [
   defaultFiltering,
   {
     title: "Trending",
     slug: "trending-desc",
-    sortKey: "BEST_SELLING",
+    filterKey: "BEST_SELLING",
     reverse: false,
   }, // asc
   {
     title: "Latest arrivals",
     slug: "latest-desc",
-    sortKey: "CREATED_AT",
+    filterKey: "CREATED_AT",
     reverse: true,
   },
   {
     title: "Price: Low to high",
     slug: "price-asc",
-    sortKey: "PRICE",
+    filterKey: "PRICE",
     reverse: false,
   }, // asc
   {
     title: "Price: High to low",
     slug: "price-desc",
-    sortKey: "PRICE",
+    filterKey: "PRICE",
     reverse: true,
   },
 ];
 
-export const sorting: SortFilterItem[] = [
+export const sorting: SortItem[] = [
   defaultSort,
   {
-    title: "Z-A",
+    title: "A-Z",
     slug: "title-asc",
     sortKey: "TITLE",
-    reverse: false,
+    direction: "ASC",
+  },
+  {
+    title: "Z-A",
+    slug: "title-desc",
+    sortKey: "TITLE",
+    direction: "DESC",
   },
 ];
 

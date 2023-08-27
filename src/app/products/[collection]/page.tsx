@@ -11,16 +11,14 @@ const Collection = async ({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
   const { filter } = searchParams as { [key: string]: string };
-  const { sortKey, reverse } =
+  const { filterKey, reverse } =
     filtering.find((item) => item.slug === filter) || defaultFiltering;
 
   const singleCollections = await getCollectionProducts({
     collection: params.collection,
-    sortKey,
+    filterKey,
     reverse,
   });
-
-  console.log({ sortKey, reverse });
 
   return (
     <div className="row">
@@ -33,33 +31,6 @@ const Collection = async ({
           );
         })}
       </Suspense>
-      <div className="col-12 mt-5">
-        <nav>
-          <ul className="pagination justify-content-center">
-            <li className="page-item active">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                <i className="ti-arrow-right"></i>
-              </a>
-            </li>
-          </ul>
-        </nav>
-        aAssS
-      </div>
     </div>
   );
 };

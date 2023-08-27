@@ -86,7 +86,6 @@ export async function shopifyFetch<T>({
     });
 
     const body = await result.json();
-    // console.log(JSON.stringify(body));
 
     const errorMessages = captureError(body) as any;
     const hasErrors = isObject(errorMessages)
@@ -176,18 +175,18 @@ const reShapeOrders = (Orders: any) => {};
 export async function getProducts({
   query,
   reverse,
-  sortKey,
+  filterKey,
 }: {
   query?: string;
   reverse?: boolean;
-  sortKey?: string;
+  filterKey?: string;
 }): Promise<Product[]> {
   const res = await shopifyFetch<ShopifyProductsOperation>({
     query: getProductsQuery,
     variables: {
       query,
       reverse,
-      sortKey,
+      filterKey,
     },
   });
 
@@ -388,18 +387,18 @@ export async function getCollections(): Promise<Collection[]> {
 export async function getCollectionProducts({
   collection,
   reverse,
-  sortKey,
+  filterKey,
 }: {
   collection: string;
   reverse?: boolean;
-  sortKey?: string;
+  filterKey?: string;
 }): Promise<Product[]> {
   const res = await shopifyFetch<ShopifyCollectionProductsOperation>({
     query: getCollectionProductsQuery,
     variables: {
       handle: collection,
       reverse,
-      sortKey: sortKey === "CREATED_AT" ? "CREATED" : sortKey,
+      filterKey: filterKey === "CREATED_AT" ? "CREATED" : filterKey,
     },
   });
 
@@ -412,6 +411,5 @@ export async function getCollectionProducts({
     removeEdgesAndNodes(res.body.data.collection.products),
   );
 
-  console.log(data.length);
   return data;
 }

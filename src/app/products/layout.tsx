@@ -1,6 +1,6 @@
+import FilterItems from "@/components/Product/Filter";
 import Sidebar from "@/components/Product/Sidebar";
-import SortFilter from "@/components/Product/Sort-Filter";
-import { filtering, sorting } from "@/lib/constants";
+import { filtering } from "@/lib/constants";
 
 const ProductLayout = ({ children }: { children: React.ReactNode }) => {
   return (
@@ -32,10 +32,10 @@ const ProductLayout = ({ children }: { children: React.ReactNode }) => {
                   </p>
                 </div>
                 <div className="flex-basis-15 p-2 p-sm-4 border-right border-left text-center">
-                  <SortFilter name={"Sort"} list={sorting} />
+                  {/* <SortItems name={"Sort"} list={sorting} /> */}
                 </div>
                 <div className="flex-basis-15 p-2 p-sm-4 text-center">
-                  <SortFilter name={"Filter"} list={filtering} />
+                  <FilterItems name={"Filter"} list={filtering} />
                 </div>
               </div>
             </div>
