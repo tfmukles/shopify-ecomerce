@@ -1,16 +1,16 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios, { AxiosError } from "axios";
+import { Order } from "@/lib/shopify/types";
+import { shopifyApiSlice } from "@/redux/api/shopifySlice";
 
-export const getOrderLists = createAsyncThunk<
-  any,
-  any,
-  {
-    rejectValue: AxiosError;
-  }
->("get/order", async (token, { rejectWithValue, getState }) => {
-  try {
-    const { data } = await axios.post("/api/order/list", { token });
-  } catch (error) {
-    return rejectWithValue(error as AxiosError);
-  }
+export const OrderApi = shopifyApiSlice.injectEndpoints({
+  endpoints: (build) => ({
+    getOrderLists: build.query<Order[], string>({
+      query: (token) => ({
+        url: "/order/list",
+        method: "get",
+        data: { token },
+      }),
+    }),
+  }),
 });
+
+export const { useGetOrderListsQuery } = OrderApi;

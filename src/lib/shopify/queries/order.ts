@@ -4,6 +4,7 @@ export const getOrder = /* GraphQL */ `
       orders(first: 10) {
         edges {
           node {
+            statusUrl
             currentTotalPrice {
               amount
               currencyCode

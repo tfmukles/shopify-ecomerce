@@ -26,6 +26,7 @@ import {
   Connection,
   CustomerInput,
   Image,
+  Order,
   Product,
   ShopifyAddToCartOperation,
   ShopifyCart,
@@ -34,12 +35,14 @@ import {
   ShopifyCollectionProductsOperation,
   ShopifyCollectionsOperation,
   ShopifyCreateCartOperation,
+  ShopifyOrder,
   ShopifyOrderOperation,
   ShopifyProduct,
   ShopifyProductOperation,
   ShopifyProductsOperation,
   ShopifyRemoveFromCartOperation,
   ShopifyUpdateCartOperation,
+  pageInfo,
   registerOperation,
   user,
   userOperation,
@@ -170,8 +173,6 @@ const reshapeProducts = (products: ShopifyProduct[]) => {
   return reshapedProducts;
 };
 
-const reShapeOrders = (Orders: any) => {};
-
 export async function getProducts({
   query,
   reverse,
@@ -180,7 +181,7 @@ export async function getProducts({
   query?: string;
   reverse?: boolean;
   filterKey?: string;
-}): Promise<Product[]> {
+}): Promise<{ pageInfo: pageInfo; products: Product[] }> {
   const res = await shopifyFetch<ShopifyProductsOperation>({
     query: getProductsQuery,
     variables: {
@@ -190,7 +191,12 @@ export async function getProducts({
     },
   });
 
-  return reshapeProducts(removeEdgesAndNodes(res.body.data.products));
+  const pageInfo = res.body.data?.products?.pageInfo;
+
+  return {
+    pageInfo,
+    products: reshapeProducts(removeEdgesAndNodes(res.body.data.products)),
+  };
 }
 
 export async function getProduct(handle: string): Promise<Product | undefined> {
@@ -307,14 +313,24 @@ export async function removeFromCart(
   return reshapeCart(res.body.data.cartLinesRemove.cart);
 }
 
-export async function getOrders(token: string) {
+const reshapeOrders = (orders: Connection<ShopifyOrder>): Order[] => {
+  const data = removeEdgesAndNodes(orders);
+  return data.map((order) => {
+    if (order.lineItems) {
+      return { ...order, lineItems: removeEdgesAndNodes(order.lineItems) };
+    }
+    return order;
+  });
+};
+
+export async function getOrders(token: string): Promise<Order[]> {
   const res = await shopifyFetch<ShopifyOrderOperation>({
     query: getOrder,
     variables: { token },
     cache: "no-store",
   });
 
-  return res.body.data.customer;
+  return reshapeOrders(res.body.data.customer.orders);
 }
 
 export async function getUserDetails(accessToken: string): Promise<user> {

@@ -7,6 +7,7 @@ import {
 } from "@/lib/constants";
 import { getProducts } from "@/lib/shopify";
 import { sortProducts } from "@/lib/utils";
+import Pagination from "@/partials/Pagination";
 
 const Products = async ({
   searchParams,
@@ -16,7 +17,11 @@ const Products = async ({
   const { filter, sort, q } = searchParams as { [key: string]: string };
   const { filterKey, reverse } =
     filtering.find((item) => item.slug === filter) || defaultFiltering;
-  const products = await getProducts({ filterKey, reverse, query: q });
+  const { products, pageInfo } = await getProducts({
+    filterKey,
+    reverse,
+    query: q,
+  });
   const { direction } =
     sorting.find((item) => item.slug === sort) || defaultSort;
   const filterProducts = sortProducts(products, direction);
@@ -26,13 +31,16 @@ const Products = async ({
   }
 
   return (
-    <div className="row">
-      {filterProducts.map((product, index) => (
-        <div className="col-lg-4 col-sm-6 mb-4" key={index}>
-          <Product product={product} />
-        </div>
-      ))}
-    </div>
+    <>
+      <div className="row">
+        {filterProducts.map((product, index) => (
+          <div className="col-lg-4 col-sm-6 mb-4" key={index}>
+            <Product product={product} />
+          </div>
+        ))}
+      </div>
+      <Pagination {...pageInfo} />
+    </>
   );
 };
 

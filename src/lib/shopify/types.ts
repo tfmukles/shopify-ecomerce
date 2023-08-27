@@ -22,6 +22,12 @@ export type Image = {
   height: number;
 };
 
+export type pageInfo = {
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  endCursor: string;
+};
+
 export type ShopifyProduct = {
   id: string;
   handle: string;
@@ -98,7 +104,10 @@ export type Product = Omit<ShopifyProduct, "variants" | "images"> & {
 
 export type ShopifyProductsOperation = {
   data: {
-    products: Connection<ShopifyProduct>;
+    products: {
+      pageInfo: pageInfo;
+      edges: Edge<ShopifyProduct>[];
+    };
   };
   variables: {
     query?: string;
@@ -262,15 +271,28 @@ export type customerToken = {
   };
 };
 
+type lineItem = {
+  quantity: number;
+  title: string;
+  originalTotalPrice: { amount: string; currencyCode: string };
+  variant: {
+    id: string;
+    image: Image;
+  };
+};
+
 export type ShopifyOrder = {
-  lineItems: Connection<{
-    quantity: number;
-    title: string;
-    varient: {
-      id: string;
-      image: Image;
-    };
-  }>;
+  cancelReason: string | null;
+  currentTotalPrice: { amount: string; currencyCode: string };
+  currentTotalTax: { amount: string; currencyCode: string };
+  financialStatus: string;
+  fulfillmentStatus: string;
+  statusUrl: string;
+  lineItems: Connection<lineItem>;
+  id: string;
+  orderNumber: string;
+  totalShippingPrice: { amount: string; currencyCode: string };
+  totalTax: { amount: string; currencyCode: string };
 };
 
 export type ShopifyOrderOperation = {
@@ -282,4 +304,8 @@ export type ShopifyOrderOperation = {
   variables: {
     token: string;
   };
+};
+
+export type Order = ShopifyOrder & {
+  lineItems: lineItem[];
 };

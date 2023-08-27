@@ -16,7 +16,7 @@ Follow these steps to set up the project on your local machine.
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/your-username/nextjs-shopify-integration.git
+   git clone https://github.com/tfmukles/shopify-ecomerce.git
 
 2. Navigate to the project directory:
 

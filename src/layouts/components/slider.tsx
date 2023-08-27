@@ -1,10 +1,14 @@
 "use client";
+import { useGetCollectionsQuery } from "@/redux/features/collection/collectionApi";
 import Link from "next/link";
 import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
 const HeroSlider = () => {
+  const { isLoading, isSuccess, data } = useGetCollectionsQuery();
+  console.log({ data });
+
   const settings: Settings = {
     dots: false,
     infinite: true,
