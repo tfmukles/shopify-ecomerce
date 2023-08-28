@@ -6,9 +6,7 @@ import Link from "next/link";
 import Slider, { Settings } from "react-slick";
 
 const CollectionSlider = () => {
-  const { isLoading, isSuccess, data } = useGetCollectionsQuery(
-    "hidden-top-collections",
-  );
+  const { isLoading, data } = useGetCollectionsQuery("hidden-top-collections");
 
   const settings: Settings = {
     dots: true,
@@ -48,6 +46,7 @@ const CollectionSlider = () => {
         <div className="col-lg-12 text-center">
           <h2 className="section-title">Top Collections</h2>
         </div>
+        {isLoading && <h2 className="text-center">Loading...</h2>}
         <div className="row">
           <div className="col-12">
             <Slider {...settings} className="collection-slider">
@@ -66,52 +65,16 @@ const CollectionSlider = () => {
                           />
                         </Link>
                       </div>
-                      <div className="product-hover-overlay">
-                        <ul className="list-unstyled">
-                          <li>
-                            <a
-                              href="#"
-                              className="product-icon"
-                              data-toggle="tooltip"
-                              data-placement="left"
-                              title="Wishlist"
-                            >
-                              <i className="ti-heart"></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              href="#"
-                              className="product-icon"
-                              data-toggle="tooltip"
-                              data-placement="left"
-                              title="Compare"
-                            >
-                              <i className="ti-direction-alt"></i>
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              data-vbtype="inline"
-                              href="#quickView"
-                              className="product-icon venobox"
-                              data-toggle="tooltip"
-                              data-placement="left"
-                              title="Quick View"
-                            >
-                              <i className="ti-search"></i>
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
                     </div>
                     <div className="product-info">
                       <h3 className="h5">
                         <a className="text-color" href="product-single.html">
-                          Leather Backpack
+                          {product.title}{" "}
                         </a>
                       </h3>
-                      <span className="h5">$320.79</span>
+                      <span className="h5">
+                        ${product.priceRange.minVariantPrice.amount}
+                      </span>
                     </div>
                   </div>
                 </div>

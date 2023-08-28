@@ -7,7 +7,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
 const HeroSlider = () => {
-  const { isLoading, isSuccess, data } = useGetCollectionsQuery(
+  const { isLoading, data } = useGetCollectionsQuery(
     "hidden-homepage-carousel",
   );
 
@@ -51,6 +51,7 @@ const HeroSlider = () => {
     <>
       <section className="section bg-gray hero-area">
         <div className="container">
+          {isLoading && <h1>Loading...</h1>}
           <Slider {...settings} className="hero-slider">
             {/* <!-- Start first slide  --> */}
             {data?.map((product) => (

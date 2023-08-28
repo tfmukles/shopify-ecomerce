@@ -1,6 +1,7 @@
 import Product from "@/components/Product/Index";
 import { defaultFiltering, filtering } from "@/lib/constants";
 import { getCollectionProducts } from "@/lib/shopify";
+import Pagination from "@/partials/Pagination";
 import { Suspense } from "react";
 
 const Collection = async ({
@@ -21,17 +22,20 @@ const Collection = async ({
   });
 
   return (
-    <div className="row">
-      <Suspense fallback={<h2>Loading...</h2>}>
-        {singleCollections.map((product, index) => {
-          return (
-            <div className="col-lg-4 col-sm-6 mb-4" key={index}>
-              <Product product={product} />
-            </div>
-          );
-        })}
-      </Suspense>
-    </div>
+    <>
+      <div className="row">
+        <Suspense fallback={<h2>Loading...</h2>}>
+          {singleCollections.map((product, index) => {
+            return (
+              <div className="col-lg-4 col-sm-6 mb-4" key={index}>
+                <Product product={product} />
+              </div>
+            );
+          })}
+        </Suspense>
+      </div>
+      <Pagination currentPage={1} />
+    </>
   );
 };
 
