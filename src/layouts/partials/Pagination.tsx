@@ -1,7 +1,18 @@
+"use client";
+
 import DynamicIcon from "@/helpers/DynamicIcon";
 import { pageInfo } from "@/lib/shopify/types";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
 
-const Pagination = ({ endCursor, hasNextPage, hasPreviousPage }: pageInfo) => {
+const Pagination = ({
+  endCursor,
+  hasNextPage,
+  hasPreviousPage,
+  currentPage,
+}: Partial<pageInfo> & { currentPage: number }) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="col-12 mt-5">
       <nav>
@@ -13,21 +24,19 @@ const Pagination = ({ endCursor, hasNextPage, hasPreviousPage }: pageInfo) => {
               </a>
             </li>
           )}
-          <li className="page-item active">
-            <a className="page-link" href="#">
-              1
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              2
-            </a>
-          </li>
-          <li className="page-item">
-            <a className="page-link" href="#">
-              3
-            </a>
-          </li>
+
+          {[...Array(3).keys()].map((item) => (
+            <li
+              className={`page-item ${
+                item + 1 === currentPage ? "active" : ""
+              }`}
+              key={item + 1}
+            >
+              <Link className="page-link" href={`/products/page/${item + 1}`}>
+                {item + 1}
+              </Link>
+            </li>
+          ))}
           {hasNextPage && (
             <li className="page-item">
               <a className="page-link" href="#">

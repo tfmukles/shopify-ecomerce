@@ -39,7 +39,7 @@ const Products = async ({
           </div>
         ))}
       </div>
-      <Pagination {...pageInfo} />
+      <Pagination {...pageInfo} currentPage={1} />
     </>
   );
 };
