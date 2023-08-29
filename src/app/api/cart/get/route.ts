@@ -2,6 +2,8 @@ import { getCart } from "@/lib/shopify";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     let cart;
@@ -9,9 +11,6 @@ export async function GET(req: NextRequest) {
     if (cartId) {
       cart = await getCart(cartId);
     }
-    const newcart = cart ?? {};
-    console.log("I am herer");
-    console.log({ newcart });
     return NextResponse.json(cart || {});
   } catch (error: any) {
     const { message, status } = error.error;

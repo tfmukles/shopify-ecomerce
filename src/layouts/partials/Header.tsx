@@ -81,9 +81,9 @@ const Header = () => {
         >
           <ul className="navbar-nav mx-auto">
             <li className="nav-item">
-              <Link className="nav-link" href="/">
+              <a className="nav-link" href="index.html">
                 home
-              </Link>
+              </a>
             </li>
             <li className="nav-item dropdown view">
               <Link
