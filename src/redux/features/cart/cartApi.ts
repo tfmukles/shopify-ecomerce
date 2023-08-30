@@ -29,6 +29,7 @@ export const cartApi = shopifyApiSlice.injectEndpoints({
               return data;
             }),
           );
+          toast.success("Cart added successfully");
         } catch (error: any) {
           toast.error(error.error.data);
         }

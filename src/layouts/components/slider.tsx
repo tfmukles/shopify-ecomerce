@@ -6,6 +6,8 @@ import Slider, { Settings } from "react-slick";
 import "slick-carousel/slick/slick-theme.css";
 import "slick-carousel/slick/slick.css";
 
+export const runtime = "edge";
+
 const HeroSlider = () => {
   const { isLoading, data } = useGetCollectionsQuery(
     "hidden-homepage-carousel",

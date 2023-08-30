@@ -27,7 +27,6 @@ const Product = async ({ params }: { params: { single: string } }) => {
     priceRange,
     featuredImage,
     images,
-    descriptionHtml,
     options,
     variants,
   } = product;

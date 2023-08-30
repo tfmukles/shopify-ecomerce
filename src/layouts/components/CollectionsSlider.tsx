@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import Slider, { Settings } from "react-slick";
 
+export const runtime = "edge";
+
 const CollectionSlider = () => {
   const { isLoading, data } = useGetCollectionsQuery("hidden-top-collections");
 

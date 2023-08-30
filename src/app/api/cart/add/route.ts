@@ -2,6 +2,8 @@ import { addToCart, createCart, getCart } from "@/lib/shopify";
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function POST(req: NextRequest) {
   try {
     const { variantId } = await req.json();

@@ -1,3 +1,4 @@
+import LazyLoading from "@/components/LazyLoading";
 import Product from "@/components/Product/Index";
 import {
   defaultFiltering,
@@ -7,7 +8,28 @@ import {
 } from "@/lib/constants";
 import { getProducts } from "@/lib/shopify";
 import { sortProducts } from "@/lib/utils";
-import Pagination from "@/partials/Pagination";
+import { Metadata } from "next";
+
+export const runtime = "edge";
+
+export const generateMetadata = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}): Promise<Metadata> => {
+  const { filter, sort, q } = searchParams as { [key: string]: string };
+  const { filterKey, reverse } =
+    filtering.find((item) => item.slug === filter) || defaultFiltering;
+  const { products, pageInfo } = await getProducts({
+    filterKey,
+    reverse,
+    query: q,
+  });
+  return {
+    title: "title",
+    description: "description",
+  };
+};
 
 const Products = async ({
   searchParams,
@@ -26,20 +48,27 @@ const Products = async ({
     sorting.find((item) => item.slug === sort) || defaultSort;
   const filterProducts = sortProducts(products, direction);
 
+  console.log(products);
+
   if (filterProducts.length <= 0) {
     return <h1 className="text-center mt-5">No products</h1>;
   }
 
   return (
     <>
-      <div className="row">
-        {filterProducts.map((product, index) => (
-          <div className="col-lg-4 col-sm-6 mb-4" key={index}>
-            <Product product={product} />
-          </div>
-        ))}
-      </div>
-      <Pagination {...pageInfo} currentPage={1} />
+      <LazyLoading
+        hasNextPage={pageInfo.hasNextPage}
+        hasPreviousPage={pageInfo.hasPreviousPage}
+        endCursor={pageInfo.endCursor}
+      >
+        <div className="row products-lists">
+          {filterProducts.map((product, index) => (
+            <div className="col-lg-4 col-sm-6 mb-4" key={index}>
+              <Product product={product} />
+            </div>
+          ))}
+        </div>
+      </LazyLoading>
     </>
   );
 };
