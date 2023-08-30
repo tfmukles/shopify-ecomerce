@@ -113,6 +113,7 @@ export type ShopifyProductsOperation = {
     query?: string;
     reverse?: boolean;
     filterKey?: string;
+    cursor?: string;
   };
 };
 

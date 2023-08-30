@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 //  child navigation link interface
 export interface IChildNavigationLink {
@@ -39,12 +39,12 @@ const Header = () => {
     useRemoveCartItemMutation();
 
   // scroll to top on route change
-  useEffect(() => {
-    window.scroll({
-      top: 0,
-      behavior: "instant",
-    });
-  }, [pathname]);
+  // useEffect(() => {
+  //   // window.scroll({
+  //   //   top: 0,
+  //   //   behavior: "instant",
+  //   // });
+  // }, [pathname]);
 
   const [open, setOpen] = useState(false);
 

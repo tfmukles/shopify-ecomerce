@@ -12,6 +12,8 @@ import { Metadata } from "next";
 
 export const runtime = "edge";
 
+let product = [];
+
 export const generateMetadata = async ({
   searchParams,
 }: {
@@ -26,7 +28,7 @@ export const generateMetadata = async ({
     query: q,
   });
   return {
-    title: "title",
+    title: "title-upcoming",
     description: "description",
   };
 };
@@ -36,19 +38,19 @@ const Products = async ({
 }: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) => {
-  const { filter, sort, q } = searchParams as { [key: string]: string };
+  const { filter, sort, q, cursor } = searchParams as { [key: string]: string };
   const { filterKey, reverse } =
     filtering.find((item) => item.slug === filter) || defaultFiltering;
   const { products, pageInfo } = await getProducts({
     filterKey,
     reverse,
     query: q,
+    cursor,
   });
+
   const { direction } =
     sorting.find((item) => item.slug === sort) || defaultSort;
   const filterProducts = sortProducts(products, direction);
-
-  console.log(products);
 
   if (filterProducts.length <= 0) {
     return <h1 className="text-center mt-5">No products</h1>;

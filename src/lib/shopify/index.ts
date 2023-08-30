@@ -177,10 +177,12 @@ export async function getProducts({
   query,
   reverse,
   filterKey,
+  cursor,
 }: {
   query?: string;
   reverse?: boolean;
   filterKey?: string;
+  cursor?: string;
 }): Promise<{ pageInfo: pageInfo; products: Product[] }> {
   const res = await shopifyFetch<ShopifyProductsOperation>({
     query: getProductsQuery,
@@ -188,10 +190,13 @@ export async function getProducts({
       query,
       reverse,
       filterKey,
+      cursor,
     },
+    cache: "force-cache",
   });
 
   const pageInfo = res.body.data?.products?.pageInfo;
+  // console.log(JSON.stringify(res.body.data.products));
 
   return {
     pageInfo,
