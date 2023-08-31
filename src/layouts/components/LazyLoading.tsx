@@ -2,7 +2,6 @@
 
 import useLoadMore from "@/hooks/useLoadMore";
 import { pageInfo } from "@/lib/shopify/types";
-import { createUrl } from "@/lib/utils";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useRef } from "react";
 
@@ -23,7 +22,6 @@ const LazyLoading = ({
     const newSearchParams = new URLSearchParams(searchParams.toString());
     if (hasNextPage) {
       newSearchParams.set("cursor", endCursor);
-      router.push(createUrl(pathname, newSearchParams));
     }
   });
 

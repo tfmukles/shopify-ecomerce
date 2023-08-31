@@ -48,8 +48,8 @@ import {
   userOperation,
 } from "./types";
 
-const domain = process.env.SHOPIFY_STORE_DOMAIN
-  ? ensureStartsWith(process.env.SHOPIFY_STORE_DOMAIN, "https://")
+const domain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
+  ? ensureStartsWith(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN, "https://")
   : "";
 
 const endpoint = `${domain}${SHOPIFY_GRAPHQL_API_ENDPOINT}`;
@@ -57,7 +57,7 @@ const endpoint = `${domain}${SHOPIFY_GRAPHQL_API_ENDPOINT}`;
 type ExtractVariables<T> = T extends { variables: object }
   ? T["variables"]
   : never;
-const key = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
+const key = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
 
 export async function shopifyFetch<T>({
   cache = "no-cache",
@@ -196,7 +196,6 @@ export async function getProducts({
   });
 
   const pageInfo = res.body.data?.products?.pageInfo;
-  // console.log(JSON.stringify(res.body.data.products));
 
   return {
     pageInfo,
