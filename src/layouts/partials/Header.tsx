@@ -11,7 +11,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //  child navigation link interface
 export interface IChildNavigationLink {
@@ -38,13 +38,14 @@ const Header = () => {
   const [removeCartItem, { isLoading: isRemoving }] =
     useRemoveCartItemMutation();
 
-  // scroll to top on route change
-  // useEffect(() => {
-  //   // window.scroll({
-  //   //   top: 0,
-  //   //   behavior: "instant",
-  //   // });
-  // }, [pathname]);
+  //scroll to top on route change
+
+  useEffect(() => {
+    window.scroll({
+      top: 0,
+      behavior: "instant",
+    });
+  }, [pathname]);
 
   const [open, setOpen] = useState(false);
 
@@ -100,7 +101,7 @@ const Header = () => {
                 <Link className="dropdown-item" href="/products">
                   Shop
                 </Link>
-                <a className="dropdown-item" href="shop-list.html">
+                <a className="dropdown-item" href="/products/client">
                   Shop List
                 </a>
                 <a className="dropdown-item" href="product-single.html">

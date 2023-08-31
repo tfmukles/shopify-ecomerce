@@ -73,7 +73,13 @@ const Client = ({
           </div>
         ))}
       </div>
-      <p className={hasNextPage ? "text-center mt-5 opacity-100" : "opacity-0"}>
+      <p
+        className={
+          hasNextPage || isLoainding
+            ? "text-center mt-5 opacity-100"
+            : "opacity-0"
+        }
+      >
         Loading...
       </p>
     </div>

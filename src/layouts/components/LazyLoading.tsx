@@ -2,7 +2,7 @@
 
 import useLoadMore from "@/hooks/useLoadMore";
 import { pageInfo } from "@/lib/shopify/types";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useRef } from "react";
 
 const LazyLoading = ({
@@ -13,8 +13,6 @@ const LazyLoading = ({
 }: {
   children: React.ReactNode;
 } & pageInfo) => {
-  const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
   const targetElementRef = useRef<HTMLDivElement>(null);
 
